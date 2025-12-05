@@ -4,22 +4,30 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Firebase Admin SDK の初期化
-// 本番環境: サービスアカウントキーを使用
-// 開発環境: エミュレーターまたはダミー設定を使用
+// 環境変数から認証情報を読み込み
 if (!admin.apps.length) {
-  if (process.env.NODE_ENV === 'production' && process.env.FIREBASE_SERVICE_ACCOUNT) {
-    // 本番環境: サービスアカウントキーのJSONを環境変数から読み込み
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  const {
+    FIREBASE_PROJECT_ID,
+    FIREBASE_PRIVATE_KEY,
+    FIREBASE_CLIENT_EMAIL,
+  } = process.env;
+
+  if (FIREBASE_PROJECT_ID && FIREBASE_PRIVATE_KEY && FIREBASE_CLIENT_EMAIL) {
+    // 環境変数から認証情報を組み立て
+    const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert({
+        projectId: FIREBASE_PROJECT_ID,
+        privateKey: privateKey,
+        clientEmail: FIREBASE_CLIENT_EMAIL,
+      }),
     });
-    console.log('🔥 Firebase Admin initialized with service account');
+    console.log('🔥 Firebase Admin initialized successfully');
   } else {
-    // 開発環境: ダミー設定（実際のFirebase検証はスキップ）
-    // 注: 本番デプロイ前にサービスアカウントキーを設定すること
-    console.warn('⚠️  Running in development mode without Firebase credentials');
+    console.warn('⚠️  Firebase credentials not found in environment variables');
+    console.warn('⚠️  Required: FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL');
     console.warn('⚠️  Firebase authentication is DISABLED');
-    // admin.initializeApp();
   }
 }
 
