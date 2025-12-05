@@ -21,7 +21,7 @@ export const corporatePropertyController = {
       }
 
       const {
-        name,
+        title,
         prefecture_id,
         address,
         floor_plan_type_id,
@@ -32,7 +32,7 @@ export const corporatePropertyController = {
         key_money,
         area,
         building_age,
-        floor,
+        floor_number,
         stations,
         feature_ids,
         is_published,
@@ -40,9 +40,9 @@ export const corporatePropertyController = {
       } = req.body;
 
       // バリデーション
-      if (!name || !prefecture_id || !address || !floor_plan_type_id || !building_type_id ||
+      if (!title || !prefecture_id || !address || !floor_plan_type_id || !building_type_id ||
           rent == null || management_fee == null || deposit == null || key_money == null ||
-          area == null || building_age == null || floor == null) {
+          area == null || building_age == null || floor_number == null) {
         return res.status(400).json({
           success: false,
           error: {
@@ -67,15 +67,15 @@ export const corporatePropertyController = {
       // 物件作成
       const propertyResult = await client.query(
         `INSERT INTO properties (
-          corporate_user_id, name, prefecture_id, address, floor_plan_type_id,
+          corporate_user_id, title, prefecture_id, address, floor_plan_type_id,
           building_type_id, rent, management_fee, deposit, key_money,
-          area, building_age, floor, is_published, description
+          area, building_age, floor_number, is_published, description
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING *`,
         [
-          req.user.userId, name, prefecture_id, address, floor_plan_type_id,
+          req.user.userId, title, prefecture_id, address, floor_plan_type_id,
           building_type_id, rent, management_fee, deposit, key_money,
-          area, building_age, floor, is_published ?? false, description || null,
+          area, building_age, floor_number, is_published ?? false, description || null,
         ]
       );
 
@@ -304,7 +304,7 @@ export const corporatePropertyController = {
       }
 
       const {
-        name,
+        title,
         prefecture_id,
         address,
         floor_plan_type_id,
@@ -315,7 +315,7 @@ export const corporatePropertyController = {
         key_money,
         area,
         building_age,
-        floor,
+        floor_number,
         stations,
         feature_ids,
         is_published,
@@ -337,14 +337,14 @@ export const corporatePropertyController = {
       // 物件情報更新
       await client.query(
         `UPDATE properties SET
-          name = $1, prefecture_id = $2, address = $3, floor_plan_type_id = $4,
+          title = $1, prefecture_id = $2, address = $3, floor_plan_type_id = $4,
           building_type_id = $5, rent = $6, management_fee = $7, deposit = $8,
-          key_money = $9, area = $10, building_age = $11, floor = $12,
+          key_money = $9, area = $10, building_age = $11, floor_number = $12,
           is_published = $13, description = $14, updated_at = CURRENT_TIMESTAMP
          WHERE id = $15`,
         [
-          name, prefecture_id, address, floor_plan_type_id, building_type_id,
-          rent, management_fee, deposit, key_money, area, building_age, floor,
+          title, prefecture_id, address, floor_plan_type_id, building_type_id,
+          rent, management_fee, deposit, key_money, area, building_age, floor_number,
           is_published, description || null, id,
         ]
       );
