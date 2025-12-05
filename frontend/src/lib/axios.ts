@@ -10,9 +10,11 @@ const axiosInstance = axios.create({
 // リクエストインターセプター（認証トークンを自動付与）
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('idToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('idToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -29,10 +31,9 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // 認証エラー時はローカルストレージをクリア
-      localStorage.removeItem('idToken');
-      localStorage.removeItem('user');
-      // ログインページにリダイレクト（必要に応じて）
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('idToken');
+        localStorage.removeItem('user');
         window.location.href = '/login';
       }
     }

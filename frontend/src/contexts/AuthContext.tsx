@@ -25,15 +25,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 初期化: ローカルストレージから認証情報を復元
   useEffect(() => {
-    const storedToken = localStorage.getItem('idToken');
-    const storedUser = localStorage.getItem('user');
-    const storedProfile = localStorage.getItem('profile');
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('idToken');
+      const storedUser = localStorage.getItem('user');
+      const storedProfile = localStorage.getItem('profile');
 
-    if (storedToken && storedUser) {
-      setIdToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
+      if (storedToken && storedUser) {
+        setIdToken(storedToken);
+        setUser(JSON.parse(storedUser));
+        if (storedProfile) {
+          setProfile(JSON.parse(storedProfile));
+        }
       }
     }
     setLoading(false);
@@ -55,9 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(profile);
         setIdToken(idToken);
 
-        localStorage.setItem('idToken', idToken);
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('profile', JSON.stringify(profile));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('idToken', idToken);
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('profile', JSON.stringify(profile));
+        }
       }
     } catch (error: any) {
       throw new Error(error.response?.data?.error?.message || 'ログインに失敗しました');
@@ -78,8 +82,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(user);
         setIdToken(idToken);
 
-        localStorage.setItem('idToken', idToken);
-        localStorage.setItem('user', JSON.stringify(user));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('idToken', idToken);
+          localStorage.setItem('user', JSON.stringify(user));
+        }
       }
     } catch (error: any) {
       throw new Error(error.response?.data?.error?.message || '登録に失敗しました');
@@ -90,9 +96,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setProfile(null);
     setIdToken(null);
-    localStorage.removeItem('idToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('profile');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('idToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('profile');
+    }
   };
 
   return (
