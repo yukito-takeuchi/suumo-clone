@@ -3,6 +3,187 @@ import { userModel } from '../models/user';
 
 export const authController = {
   /**
+   * 開発環境用ログイン
+   * POST /api/auth/dev-login
+   * Body: { email }
+   */
+  async devLogin(req: Request, res: Response) {
+    if (process.env.NODE_ENV !== 'development') {
+      return res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Development login is only available in development mode',
+        },
+      });
+    }
+
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'email is required',
+          },
+        });
+      }
+
+      // メールアドレスでユーザーを検索
+      const result = await require('../config/database').query(
+        'SELECT id, firebase_uid, email, role FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'User not found',
+          },
+        });
+      }
+
+      const user = result.rows[0];
+
+      // プロフィール取得
+      let profile = null;
+      if (user.role === 'individual') {
+        profile = await userModel.getIndividualProfile(user.id);
+      } else if (user.role === 'corporate') {
+        profile = await userModel.getCorporateProfile(user.id);
+      }
+
+      res.json({
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            firebaseUid: user.firebase_uid,
+            email: user.email,
+            role: user.role,
+          },
+          profile,
+          devNote: 'Use X-Dev-User-Id: ' + user.id + ' header for authenticated requests',
+        },
+      });
+    } catch (error) {
+      console.error('Dev login error:', error);
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'SERVER_ERROR',
+          message: 'Failed to login',
+        },
+      });
+    }
+  },
+
+  /**
+   * ログイン（トークン検証 + ユーザー情報取得）
+   * POST /api/auth/login
+   * Body: { idToken }
+   */
+  async login(req: Request, res: Response) {
+    try {
+      const { idToken } = req.body;
+
+      if (!idToken) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'idToken is required',
+          },
+        });
+      }
+
+      // Firebaseが無効な場合（開発環境）
+      if (!require('../config/firebase').auth) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'FIREBASE_NOT_CONFIGURED',
+            message: 'Firebase authentication is not configured. Use development mode with X-Dev-User-Id header.',
+          },
+        });
+      }
+
+      // Firebase IDトークンを検証
+      const decodedToken = await require('../config/firebase').auth.verifyIdToken(idToken);
+      const { uid, email } = decodedToken;
+
+      // データベースからユーザーを取得
+      let user = await userModel.getUserByFirebaseUid(uid);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'User not registered. Please register first.',
+          },
+        });
+      }
+
+      // プロフィール取得
+      let profile = null;
+      if (user.role === 'individual') {
+        profile = await userModel.getIndividualProfile(user.id);
+      } else if (user.role === 'corporate') {
+        profile = await userModel.getCorporateProfile(user.id);
+      }
+
+      res.json({
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            firebaseUid: user.firebase_uid,
+            email: user.email,
+            role: user.role,
+          },
+          profile,
+        },
+      });
+    } catch (error: any) {
+      console.error('Login error:', error);
+
+      // Firebaseトークンエラー
+      if (error.code === 'auth/id-token-expired') {
+        return res.status(401).json({
+          success: false,
+          error: {
+            code: 'TOKEN_EXPIRED',
+            message: 'ID token has expired',
+          },
+        });
+      }
+
+      if (error.code === 'auth/argument-error' || error.code === 'auth/invalid-id-token') {
+        return res.status(401).json({
+          success: false,
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid ID token',
+          },
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'SERVER_ERROR',
+          message: 'Failed to login',
+        },
+      });
+    }
+  },
+
+  /**
    * ユーザー登録
    * POST /api/auth/register
    * Body: { firebaseUid, email, role }
