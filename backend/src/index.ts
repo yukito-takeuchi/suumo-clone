@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import masterDataRoutes from './routes/masterData';
 import propertyRoutes from './routes/property';
 import authRoutes from './routes/auth';
+import corporatePropertyRoutes from './routes/corporateProperty';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,9 @@ app.use('/api', masterDataRoutes);
 
 // Property routes
 app.use('/api', propertyRoutes);
+
+// Corporate property routes
+app.use('/api', corporatePropertyRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {
