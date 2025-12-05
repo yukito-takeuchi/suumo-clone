@@ -26,9 +26,8 @@ export const requireAuth = async (
   next: NextFunction
 ) => {
   try {
-    // 開発環境でFirebaseが無効な場合、ダミー認証を使用
-    if (process.env.NODE_ENV === 'development' && !auth) {
-      // 開発用: ヘッダーから直接ユーザー情報を取得
+    // 開発環境: X-Dev-User-Idヘッダーがある場合は開発モードを使用
+    if (process.env.NODE_ENV === 'development') {
       const devUserId = req.headers['x-dev-user-id'];
       if (devUserId) {
         const result = await query(
@@ -45,12 +44,23 @@ export const requireAuth = async (
           };
           return next();
         }
+        return res.status(401).json({
+          success: false,
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Development mode: Invalid user ID',
+          },
+        });
       }
+    }
+
+    // Firebaseが無効な場合
+    if (!auth) {
       return res.status(401).json({
         success: false,
         error: {
           code: 'UNAUTHORIZED',
-          message: 'Development mode: Set X-Dev-User-Id header',
+          message: 'Firebase authentication is not configured',
         },
       });
     }
