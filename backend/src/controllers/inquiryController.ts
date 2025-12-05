@@ -53,7 +53,7 @@ export const inquiryController = {
         });
       }
 
-      // 物件が存在するか確認
+      // 物件が存在するか確認し、corporate_user_idを取得
       const propertyCheck = await query(
         'SELECT id, corporate_user_id FROM properties WHERE id = $1',
         [property_id]
@@ -69,21 +69,34 @@ export const inquiryController = {
         });
       }
 
+      const corporate_user_id = propertyCheck.rows[0].corporate_user_id;
+
+      // inquiry_typeに応じたメッセージを作成
+      let fullMessage = '';
+      if (inquiry_type === 'vacancy') {
+        fullMessage = '【最新の空室状況を知りたい】\n' + (message || '');
+      } else if (inquiry_type === 'viewing') {
+        fullMessage = '【実際に見学したい】\n' + (message || '');
+      } else {
+        fullMessage = '【その他の問い合わせ】\n' + message;
+      }
+
       // 問い合わせ作成
       const result = await query(
         `INSERT INTO inquiries (
-          property_id, user_id, inquiry_type, name, email, phone, message, status
+          property_id, individual_user_id, corporate_user_id,
+          contact_name, contact_email, contact_phone, message, status
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`,
         [
           property_id,
           req.user.userId,
-          inquiry_type,
+          corporate_user_id,
           name,
           email,
           phone || null,
-          message || null,
-          'pending',
+          fullMessage,
+          'unread',
         ]
       );
 
@@ -133,14 +146,14 @@ export const inquiryController = {
          FROM inquiries i
          JOIN properties p ON i.property_id = p.id
          LEFT JOIN prefectures pref ON p.prefecture_id = pref.id
-         WHERE i.user_id = $1
+         WHERE i.individual_user_id = $1
          ORDER BY i.created_at DESC
          LIMIT $2 OFFSET $3`,
         [req.user.userId, limit, offset]
       );
 
       const countResult = await query(
-        'SELECT COUNT(*) FROM inquiries WHERE user_id = $1',
+        'SELECT COUNT(*) FROM inquiries WHERE individual_user_id = $1',
         [req.user.userId]
       );
 
@@ -201,7 +214,7 @@ export const inquiryController = {
          JOIN properties p ON i.property_id = p.id
          LEFT JOIN prefectures pref ON p.prefecture_id = pref.id
          LEFT JOIN corporate_profiles cp ON p.corporate_user_id = cp.user_id
-         WHERE i.id = $1 AND i.user_id = $2`,
+         WHERE i.id = $1 AND i.individual_user_id = $2`,
         [id, req.user.userId]
       );
 
@@ -407,12 +420,12 @@ export const inquiryController = {
         });
       }
 
-      if (!['pending', 'replied', 'closed'].includes(status)) {
+      if (!['unread', 'read', 'responded'].includes(status)) {
         return res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
-            message: 'status must be pending, replied, or closed',
+            message: 'status must be unread, read, or responded',
           },
         });
       }
