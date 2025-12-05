@@ -1,0 +1,10 @@
+{
+  "migrationsDirectory": "migrations",
+  "driver": "pg",
+  "host": "localhost",
+  "port": 5432,
+  "database": "suumo_clone",
+  "username": "postgres",
+  "password": "password",
+  "schema": "public"
+}

@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import masterDataRoutes from './routes/masterData';
+import propertyRoutes from './routes/property';
+import authRoutes from './routes/auth';
 
 // Load environment variables
 dotenv.config();
@@ -25,10 +28,19 @@ app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
-// API routes will be added here
+// API routes
 app.get('/api', (req: Request, res: Response) => {
-  res.json({ message: 'E-commerce API' });
+  res.json({ message: 'SUUMO Clone API' });
 });
+
+// Auth routes
+app.use('/api', authRoutes);
+
+// Master data routes
+app.use('/api', masterDataRoutes);
+
+// Property routes
+app.use('/api', propertyRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {
