@@ -96,7 +96,7 @@ export const corporatePropertyController = {
       if (feature_ids && feature_ids.length > 0) {
         for (const featureId of feature_ids) {
           await client.query(
-            `INSERT INTO property_property_features (property_id, property_feature_id)
+            `INSERT INTO property_property_features (property_id, feature_id)
              VALUES ($1, $2)`,
             [property.id, featureId]
           );
@@ -369,7 +369,7 @@ export const corporatePropertyController = {
         if (feature_ids.length > 0) {
           for (const featureId of feature_ids) {
             await client.query(
-              `INSERT INTO property_property_features (property_id, property_feature_id)
+              `INSERT INTO property_property_features (property_id, feature_id)
                VALUES ($1, $2)`,
               [id, featureId]
             );
@@ -752,7 +752,7 @@ async function getPropertyDetail(propertyId: number) {
   const featuresResult = await query(
     `SELECT pf.*
      FROM property_features pf
-     JOIN property_property_features ppf ON pf.id = ppf.property_feature_id
+     JOIN property_property_features ppf ON pf.id = ppf.feature_id
      WHERE ppf.property_id = $1`,
     [propertyId]
   );
