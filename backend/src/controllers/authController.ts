@@ -83,51 +83,47 @@ export const authController = {
   },
 
   /**
-   * ログイン（トークン検証 + ユーザー情報取得）
+   * ログイン（メール・パスワード認証 + カスタムトークン発行）
    * POST /api/auth/login
-   * Body: { idToken }
+   * Body: { email, password }
    */
   async login(req: Request, res: Response) {
     try {
-      const { idToken } = req.body;
+      const { email, password } = req.body;
 
-      if (!idToken) {
+      if (!email || !password) {
         return res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
-            message: 'idToken is required',
+            message: 'email and password are required',
           },
         });
       }
 
-      // Firebaseが無効な場合（開発環境）
-      if (!require('../config/firebase').auth) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: 'FIREBASE_NOT_CONFIGURED',
-            message: 'Firebase authentication is not configured. Use development mode with X-Dev-User-Id header.',
-          },
-        });
-      }
-
-      // Firebase IDトークンを検証
-      const decodedToken = await require('../config/firebase').auth.verifyIdToken(idToken);
-      const { uid, email } = decodedToken;
+      // Firebase REST APIでメール・パスワード認証
+      const firebaseAuth = await require('../utils/firebaseAuth').signInWithEmailAndPassword(
+        email,
+        password
+      );
 
       // データベースからユーザーを取得
-      let user = await userModel.getUserByFirebaseUid(uid);
+      let user = await userModel.getUserByFirebaseUid(firebaseAuth.localId);
 
       if (!user) {
         return res.status(404).json({
           success: false,
           error: {
             code: 'USER_NOT_FOUND',
-            message: 'User not registered. Please register first.',
+            message: 'User not registered in database. Please contact support.',
           },
         });
       }
+
+      // カスタムトークン発行
+      const customToken = await require('../utils/firebaseAuth').createCustomToken(
+        firebaseAuth.localId
+      );
 
       // プロフィール取得
       let profile = null;
@@ -147,28 +143,30 @@ export const authController = {
             role: user.role,
           },
           profile,
+          customToken,
+          idToken: firebaseAuth.idToken,
         },
       });
     } catch (error: any) {
       console.error('Login error:', error);
 
-      // Firebaseトークンエラー
-      if (error.code === 'auth/id-token-expired') {
+      // Firebase エラー
+      if (error.message === 'EMAIL_NOT_FOUND' || error.message === 'INVALID_PASSWORD' || error.message === 'INVALID_LOGIN_CREDENTIALS') {
         return res.status(401).json({
           success: false,
           error: {
-            code: 'TOKEN_EXPIRED',
-            message: 'ID token has expired',
+            code: 'INVALID_CREDENTIALS',
+            message: 'Invalid email or password',
           },
         });
       }
 
-      if (error.code === 'auth/argument-error' || error.code === 'auth/invalid-id-token') {
-        return res.status(401).json({
+      if (error.message === 'USER_DISABLED') {
+        return res.status(403).json({
           success: false,
           error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid ID token',
+            code: 'USER_DISABLED',
+            message: 'This account has been disabled',
           },
         });
       }
@@ -184,21 +182,21 @@ export const authController = {
   },
 
   /**
-   * ユーザー登録
+   * ユーザー登録（Firebase + DB）
    * POST /api/auth/register
-   * Body: { firebaseUid, email, role }
+   * Body: { email, password, role }
    */
   async register(req: Request, res: Response) {
     try {
-      const { firebaseUid, email, role } = req.body;
+      const { email, password, role } = req.body;
 
       // バリデーション
-      if (!firebaseUid || !email || !role) {
+      if (!email || !password || !role) {
         return res.status(400).json({
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
-            message: 'firebaseUid, email, and role are required',
+            message: 'email, password, and role are required',
           },
         });
       }
@@ -213,20 +211,29 @@ export const authController = {
         });
       }
 
-      // 既存ユーザーチェック
-      const existingUser = await userModel.getUserByFirebaseUid(firebaseUid);
-      if (existingUser) {
-        return res.status(409).json({
+      if (password.length < 6) {
+        return res.status(400).json({
           success: false,
           error: {
-            code: 'USER_ALREADY_EXISTS',
-            message: 'User already registered',
+            code: 'VALIDATION_ERROR',
+            message: 'Password must be at least 6 characters',
           },
         });
       }
 
-      // ユーザー作成
-      const user = await userModel.createUser(firebaseUid, email, role);
+      // Firebase REST APIで新規ユーザー作成
+      const firebaseUser = await require('../utils/firebaseAuth').createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      // データベースにユーザー作成
+      const user = await userModel.createUser(firebaseUser.localId, email, role);
+
+      // カスタムトークン発行
+      const customToken = await require('../utils/firebaseAuth').createCustomToken(
+        firebaseUser.localId
+      );
 
       res.status(201).json({
         success: true,
@@ -238,10 +245,33 @@ export const authController = {
             role: user.role,
             createdAt: user.created_at,
           },
+          customToken,
+          idToken: firebaseUser.idToken,
         },
       });
     } catch (error: any) {
       console.error('Registration error:', error);
+
+      // Firebase エラー
+      if (error.message === 'EMAIL_EXISTS') {
+        return res.status(409).json({
+          success: false,
+          error: {
+            code: 'EMAIL_ALREADY_EXISTS',
+            message: 'Email already registered',
+          },
+        });
+      }
+
+      if (error.message === 'WEAK_PASSWORD') {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'WEAK_PASSWORD',
+            message: 'Password is too weak',
+          },
+        });
+      }
 
       // ユニーク制約違反
       if (error.code === '23505') {
@@ -377,6 +407,53 @@ export const authController = {
         error: {
           code: 'SERVER_ERROR',
           message: 'Failed to update profile',
+        },
+      });
+    }
+  },
+
+  /**
+   * カスタムトークン発行（開発・テスト用）
+   * POST /api/auth/custom-token
+   * Body: { firebaseUid }
+   */
+  async getCustomToken(req: Request, res: Response) {
+    try {
+      const { firebaseUid } = req.body;
+
+      if (!firebaseUid) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'firebaseUid is required',
+          },
+        });
+      }
+
+      // カスタムトークン発行
+      const customToken = await require('../utils/firebaseAuth').createCustomToken(firebaseUid);
+
+      // IDトークンに交換
+      const idToken = await require('../utils/firebaseAuth').exchangeCustomTokenForIdToken(
+        customToken
+      );
+
+      res.json({
+        success: true,
+        data: {
+          customToken,
+          idToken,
+          note: 'Use idToken in Authorization: Bearer <idToken> header',
+        },
+      });
+    } catch (error: any) {
+      console.error('Custom token error:', error);
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'SERVER_ERROR',
+          message: 'Failed to create custom token',
         },
       });
     }

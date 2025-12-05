@@ -13,6 +13,9 @@ router.post('/auth/login', authController.login);
 // ユーザー登録（認証不要）
 router.post('/auth/register', authController.register);
 
+// カスタムトークン発行（開発・テスト用、認証不要）
+router.post('/auth/custom-token', authController.getCustomToken);
+
 // 現在のユーザー情報取得（認証必須）
 router.get('/auth/me', requireAuth, authController.getCurrentUser);
 
