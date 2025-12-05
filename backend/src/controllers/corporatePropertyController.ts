@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { query } from '../config/database';
+import pool from '../config/database';
 
 export const corporatePropertyController = {
   /**
@@ -7,7 +8,7 @@ export const corporatePropertyController = {
    * POST /api/corporate/properties
    */
   async createProperty(req: Request, res: Response) {
-    const client = await require('../config/database').pool.connect();
+    const client = await pool.connect();
     try {
       if (!req.user || req.user.role !== 'corporate') {
         return res.status(403).json({
@@ -262,7 +263,7 @@ export const corporatePropertyController = {
    * PUT /api/corporate/properties/:id
    */
   async updateProperty(req: Request, res: Response) {
-    const client = await require('../config/database').pool.connect();
+    const client = await pool.connect();
     try {
       if (!req.user || req.user.role !== 'corporate') {
         return res.status(403).json({
