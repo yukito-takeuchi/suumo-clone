@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+  <!-- suumo text in black -->
+  <text x="20" y="250" font-family="Arial Black, sans-serif" font-size="200" font-weight="900" fill="#231815">suumo</text>
+
+  <!-- Green arrow curve -->
+  <path d="M 0 300 Q 600 280 1180 50 L 1180 10 Q 600 240 0 260 Z" fill="#8BC34A"/>
+
+  <!-- スーモ text in Japanese -->
+  <text x="20" y="380" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#231815">スーモ</text>
+</svg>
