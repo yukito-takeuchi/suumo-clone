@@ -101,3 +101,21 @@ export const getCorporateInquiries = async (page: number = 1, limit: number = 20
   }>>('/corporate/inquiries', { params });
   return response.data.data || { inquiries: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
 };
+
+// 企業ユーザー向け: 問い合わせ詳細取得
+export const getCorporateInquiryById = async (id: number): Promise<Inquiry> => {
+  const response = await axios.get<ApiResponse<Inquiry>>(`/corporate/inquiries/${id}`);
+  if (!response.data.data) {
+    throw new Error('Inquiry not found');
+  }
+  return response.data.data;
+};
+
+// 企業ユーザー向け: 問い合わせステータス更新
+export const updateInquiryStatus = async (id: number, status: 'unread' | 'read' | 'responded'): Promise<Inquiry> => {
+  const response = await axios.patch<ApiResponse<Inquiry>>(`/corporate/inquiries/${id}/status`, { status });
+  if (!response.data.data) {
+    throw new Error('Failed to update inquiry status');
+  }
+  return response.data.data;
+};
