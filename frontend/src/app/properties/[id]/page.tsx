@@ -43,7 +43,9 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
     const fetchProperty = async () => {
       setLoading(true);
       try {
+        console.log('Fetching property with ID:', params.id);
         const data = await getPropertyById(Number(params.id));
+        console.log('Property data received:', data);
         setProperty(data);
         if (data.images && data.images.length > 0) {
           setSelectedImage(data.images[0].image_url);
@@ -68,7 +70,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );
@@ -76,13 +78,15 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
 
   if (!property) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Paper sx={{ p: 6, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            物件が見つかりませんでした
-          </Typography>
-        </Paper>
-      </Container>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 4 }}>
+        <Container maxWidth="lg">
+          <Paper sx={{ p: 6, textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              物件が見つかりませんでした
+            </Typography>
+          </Paper>
+        </Container>
+      </Box>
     );
   }
 

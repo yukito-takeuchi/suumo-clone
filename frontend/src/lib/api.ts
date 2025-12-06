@@ -57,11 +57,11 @@ export const searchProperties = async (
 
 // 物件詳細取得
 export const getPropertyById = async (id: number): Promise<Property> => {
-  const response = await axios.get<ApiResponse<{ property: Property }>>(`/properties/${id}`);
+  const response = await axios.get<ApiResponse<Property>>(`/properties/${id}`);
   if (!response.data.data) {
     throw new Error('Property not found');
   }
-  return response.data.data.property;
+  return response.data.data;
 };
 
 // 問い合わせ送信

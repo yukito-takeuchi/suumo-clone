@@ -107,7 +107,7 @@ export default function InquiryPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );
@@ -115,33 +115,37 @@ export default function InquiryPage({ params }: { params: { id: string } }) {
 
   if (!property) {
     return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
-        <Paper sx={{ p: 6, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary">
-            物件が見つかりませんでした
-          </Typography>
-        </Paper>
-      </Container>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 4 }}>
+        <Container maxWidth="md">
+          <Paper sx={{ p: 6, textAlign: 'center' }}>
+            <Typography variant="h6" color="text.secondary">
+              物件が見つかりませんでした
+            </Typography>
+          </Paper>
+        </Container>
+      </Box>
     );
   }
 
   if (success) {
     return (
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <Paper sx={{ p: 6, textAlign: 'center' }}>
-          <Alert severity="success" sx={{ mb: 3 }}>
-            問い合わせを送信しました
-          </Alert>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-            お問い合わせありがとうございます
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            担当者から折り返しご連絡いたします。
-            <br />
-            3秒後に物件詳細ページに戻ります...
-          </Typography>
-        </Paper>
-      </Container>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 8 }}>
+        <Container maxWidth="md">
+          <Paper sx={{ p: 6, textAlign: 'center' }}>
+            <Alert severity="success" sx={{ mb: 3 }}>
+              問い合わせを送信しました
+            </Alert>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+              お問い合わせありがとうございます
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              担当者から折り返しご連絡いたします。
+              <br />
+              3秒後に物件詳細ページに戻ります...
+            </Typography>
+          </Paper>
+        </Container>
+      </Box>
     );
   }
 
