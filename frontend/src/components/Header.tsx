@@ -39,22 +39,32 @@ export default function Header() {
                 {user?.email}
               </Typography>
               {user?.role === 'corporate' && (
-                <Button
-                  color="inherit"
-                  component={Link}
-                  href="/corporate/properties"
-                  sx={{ mr: 1 }}
-                >
-                  物件管理
-                </Button>
+                <>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    href="/corporate/properties"
+                    sx={{ mr: 1 }}
+                  >
+                    物件管理
+                  </Button>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    href="/corporate/inquiries"
+                    sx={{ mr: 1 }}
+                  >
+                    問い合わせ管理
+                  </Button>
+                </>
               )}
               <Button
                 color="inherit"
                 component={Link}
-                href="/inquiries"
+                href="/profile"
                 sx={{ mr: 1 }}
               >
-                問い合わせ履歴
+                プロフィール
               </Button>
               <Button color="inherit" onClick={logout}>
                 ログアウト
