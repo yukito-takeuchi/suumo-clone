@@ -12,8 +12,11 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import PersonIcon from '@mui/icons-material/Person';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import HomeIcon from '@mui/icons-material/Home';
 import BusinessIcon from '@mui/icons-material/Business';
+import SearchIcon from '@mui/icons-material/Search';
+import HistoryIcon from '@mui/icons-material/History';
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -35,9 +38,39 @@ export default function Header() {
             sx={{
               minHeight: '40px !important',
               py: 0.5,
+              justifyContent: 'flex-end',
             }}
           >
-            <Box sx={{ flexGrow: 1 }} />
+            {/* Icon Menu (Design Only) */}
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mr: 3 }}>
+              {[
+                { icon: <FavoriteBorderIcon sx={{ fontSize: '1rem' }} />, label: 'お気に入り' },
+                { icon: <HomeIcon sx={{ fontSize: '1rem' }} />, label: '物件' },
+                { icon: <BusinessIcon sx={{ fontSize: '1rem' }} />, label: '会社' },
+                { icon: <SearchIcon sx={{ fontSize: '1rem' }} />, label: '検索条件' },
+                { icon: <HistoryIcon sx={{ fontSize: '1rem' }} />, label: '閲覧履歴' },
+              ].map((item, index) => (
+                <Button
+                  key={index}
+                  color="inherit"
+                  size="small"
+                  startIcon={item.icon}
+                  sx={{
+                    color: 'white',
+                    fontSize: '0.75rem',
+                    textTransform: 'none',
+                    minWidth: 'auto',
+                    px: 1,
+                    py: 0.5,
+                    '&:hover': {
+                      bgcolor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Box>
 
             {/* Right Side: User Menu */}
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
