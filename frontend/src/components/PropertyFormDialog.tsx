@@ -142,7 +142,11 @@ export default function PropertyFormDialog({
       setDescription(property.description || '');
       setIsPublished(property.is_published);
       setSelectedFeatures(property.features?.map((f) => f.feature_id) || []);
-      // Note: Image editing will need additional implementation
+      // Load existing images
+      if (property.images && property.images.length > 0) {
+        setImagePreviews(property.images.map((img) => img.image_url));
+        setImageFiles([]); // Reset files since we're showing existing images
+      }
     } else {
       // Reset form for create mode
       resetForm();

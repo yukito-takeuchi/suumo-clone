@@ -37,6 +37,7 @@ export const corporatePropertyController = {
         feature_ids,
         is_published,
         description,
+        images,
       } = req.body;
 
       // バリデーション
@@ -99,6 +100,17 @@ export const corporatePropertyController = {
             `INSERT INTO property_property_features (property_id, feature_id)
              VALUES ($1, $2)`,
             [property.id, featureId]
+          );
+        }
+      }
+
+      // 画像を登録
+      if (images && images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          await client.query(
+            `INSERT INTO property_images (property_id, image_url, display_order)
+             VALUES ($1, $2, $3)`,
+            [property.id, images[i], i + 1]
           );
         }
       }
@@ -320,6 +332,7 @@ export const corporatePropertyController = {
         feature_ids,
         is_published,
         description,
+        images,
       } = req.body;
 
       if (stations && stations.length > 3) {
@@ -372,6 +385,20 @@ export const corporatePropertyController = {
               `INSERT INTO property_property_features (property_id, feature_id)
                VALUES ($1, $2)`,
               [id, featureId]
+            );
+          }
+        }
+      }
+
+      // 画像を更新（既存削除→新規追加）
+      if (images !== undefined) {
+        await client.query('DELETE FROM property_images WHERE property_id = $1', [id]);
+        if (images.length > 0) {
+          for (let i = 0; i < images.length; i++) {
+            await client.query(
+              `INSERT INTO property_images (property_id, image_url, display_order)
+               VALUES ($1, $2, $3)`,
+              [id, images[i], i + 1]
             );
           }
         }
