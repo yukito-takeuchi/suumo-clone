@@ -197,14 +197,16 @@ export default function Header() {
               alignItems: 'center',
             }}
           >
-            {/* Left Section: Logo + Area (25% of width) */}
+            {/* Left Section: Logo + Area */}
             <Box
               sx={{
-                flex: '0 0 25%',
+                width: { md: 'calc(20vw + 100px)', lg: '280px', xl: '320px' },
+                minWidth: '250px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 3,
-                pr: 2,
+                gap: { md: 2, lg: 3 },
+                mr: { md: 2, lg: 3 },
+                flexShrink: 0,
               }}
             >
               {/* Logo */}
@@ -214,7 +216,6 @@ export default function Header() {
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
-                  flex: 1,
                 }}
               >
                 <Box
@@ -222,9 +223,8 @@ export default function Header() {
                   src="/suumo-logo.svg"
                   alt="SUUMO"
                   sx={{
-                    height: { xs: '55px', md: '70px' },
+                    height: { xs: '55px', md: '60px', lg: '70px' },
                     width: 'auto',
-                    maxWidth: '100%',
                   }}
                 />
               </Link>
@@ -236,13 +236,14 @@ export default function Header() {
                   flexDirection: 'column',
                   alignItems: 'flex-start',
                   gap: 0.3,
+                  flexShrink: 0,
                 }}
               >
                 <Typography
                   variant="caption"
                   sx={{
                     color: '#666',
-                    fontSize: '0.7rem',
+                    fontSize: 'clamp(0.65rem, 0.5vw + 0.4rem, 0.75rem)',
                   }}
                 >
                   全国へ
@@ -252,8 +253,9 @@ export default function Header() {
                   sx={{
                     fontWeight: 700,
                     color: '#231815',
-                    fontSize: '1.1rem',
+                    fontSize: 'clamp(0.9rem, 0.8vw + 0.5rem, 1.1rem)',
                     lineHeight: 1,
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   関東版
@@ -261,38 +263,42 @@ export default function Header() {
               </Box>
             </Box>
 
-            {/* Right Section: Category Navigation (75% of width) */}
+            {/* Right Section: Category Navigation */}
             <Box
               sx={{
-                flex: '0 0 75%',
+                flex: 1,
                 display: { xs: 'none', md: 'flex' },
                 gap: 0,
                 alignItems: 'stretch',
-                justifyContent: 'flex-end',
+                justifyContent: 'flex-start',
+                overflow: 'hidden',
+                minWidth: 0,
               }}
             >
               {/* Active Category: 借りる > 賃貸 */}
               <Box
                 sx={{
-                  px: 2,
+                  px: { md: 1.5, lg: 2 },
                   py: 1.5,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minWidth: '110px',
+                  minWidth: { md: '85px', lg: '100px' },
                   borderLeft: '1px solid #E0E0E0',
+                  flexShrink: 0,
                 }}
               >
                 {/* 第1階層: ラベル（小さく控えめ） */}
                 <Typography
                   variant="caption"
                   sx={{
-                    fontSize: '0.7rem',
+                    fontSize: 'clamp(0.6rem, 0.5vw + 0.3rem, 0.7rem)',
                     color: '#999',
                     lineHeight: 1.2,
                     mb: 0.8,
                     fontWeight: 400,
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   借りる
@@ -305,8 +311,8 @@ export default function Header() {
                     bgcolor: '#8BC34A',
                     color: 'white',
                     fontWeight: 700,
-                    fontSize: '0.95rem',
-                    px: 2.5,
+                    fontSize: 'clamp(0.8rem, 0.7vw + 0.4rem, 0.95rem)',
+                    px: { md: 2, lg: 2.5 },
                     py: 0.6,
                     borderRadius: '3px',
                     textTransform: 'none',
@@ -336,25 +342,27 @@ export default function Header() {
                 <Box
                   key={index}
                   sx={{
-                    px: 2,
+                    px: { md: 1, lg: 1.5 },
                     py: 1.5,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: category.subs.length > 1 ? '150px' : '110px',
+                    minWidth: category.subs.length > 1 ? { md: '110px', lg: '130px' } : { md: '80px', lg: '95px' },
                     borderLeft: '1px solid #E0E0E0',
+                    flexShrink: 1,
                   }}
                 >
                   {/* 第1階層: ラベル（小さく控えめ） */}
                   <Typography
                     variant="caption"
                     sx={{
-                      fontSize: '0.7rem',
+                      fontSize: 'clamp(0.6rem, 0.5vw + 0.3rem, 0.7rem)',
                       color: '#999',
                       lineHeight: 1.2,
                       mb: 0.8,
                       fontWeight: 400,
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {category.main}
@@ -364,7 +372,7 @@ export default function Header() {
                   <Box
                     sx={{
                       display: 'flex',
-                      gap: 0.8,
+                      gap: { md: 0.5, lg: 0.8 },
                       alignItems: 'center',
                       flexDirection: 'row',
                     }}
@@ -376,8 +384,8 @@ export default function Header() {
                         sx={{
                           color: '#666',
                           fontWeight: 600,
-                          fontSize: '0.85rem',
-                          px: 2,
+                          fontSize: 'clamp(0.7rem, 0.6vw + 0.35rem, 0.85rem)',
+                          px: { md: 1.2, lg: 1.8 },
                           py: 0.5,
                           borderRadius: '3px',
                           textTransform: 'none',
