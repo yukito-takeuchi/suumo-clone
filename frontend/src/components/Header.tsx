@@ -259,13 +259,13 @@ export default function Header() {
               {/* Active Category: 借りる > 賃貸 */}
               <Box
                 sx={{
-                  px: 2.5,
-                  py: 1,
+                  px: 2,
+                  py: 1.5,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minWidth: '100px',
+                  minWidth: '110px',
                   borderLeft: '1px solid #E0E0E0',
                 }}
               >
@@ -276,7 +276,7 @@ export default function Header() {
                     fontSize: '0.7rem',
                     color: '#999',
                     lineHeight: 1.2,
-                    mb: 0.5,
+                    mb: 0.8,
                     fontWeight: 400,
                   }}
                 >
@@ -290,16 +290,19 @@ export default function Header() {
                     bgcolor: '#8BC34A',
                     color: 'white',
                     fontWeight: 700,
-                    fontSize: '1rem',
-                    px: 3,
-                    py: 0.8,
-                    borderRadius: '4px',
+                    fontSize: '0.95rem',
+                    px: 2.5,
+                    py: 0.6,
+                    borderRadius: '3px',
                     textTransform: 'none',
                     minWidth: 'auto',
+                    border: '1px solid #7CB342',
                     '&:hover': {
                       bgcolor: '#7CB342',
+                      border: '1px solid #689F38',
                     },
                     boxShadow: 'none',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   賃貸
@@ -319,12 +322,12 @@ export default function Header() {
                   key={index}
                   sx={{
                     px: 2,
-                    py: 1,
+                    py: 1.5,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: category.subs.length > 1 ? '130px' : '100px',
+                    minWidth: category.subs.length > 1 ? '150px' : '110px',
                     borderLeft: '1px solid #E0E0E0',
                   }}
                 >
@@ -335,7 +338,7 @@ export default function Header() {
                       fontSize: '0.7rem',
                       color: '#999',
                       lineHeight: 1.2,
-                      mb: 0.5,
+                      mb: 0.8,
                       fontWeight: 400,
                     }}
                   >
@@ -348,22 +351,28 @@ export default function Header() {
                       display: 'flex',
                       gap: 0.8,
                       alignItems: 'center',
+                      flexDirection: 'row',
                     }}
                   >
                     {category.subs.map((sub, subIndex) => (
                       <Button
                         key={subIndex}
-                        variant="text"
+                        variant="outlined"
                         sx={{
-                          color: '#333',
+                          color: '#666',
                           fontWeight: 600,
-                          fontSize: '0.95rem',
-                          px: 1.5,
+                          fontSize: '0.85rem',
+                          px: 2,
                           py: 0.5,
+                          borderRadius: '3px',
                           textTransform: 'none',
                           minWidth: 'auto',
+                          border: '1px solid #CCC',
+                          bgcolor: 'white',
+                          whiteSpace: 'nowrap',
                           '&:hover': {
                             bgcolor: '#F5F5F5',
+                            border: '1px solid #999',
                           },
                         }}
                       >
