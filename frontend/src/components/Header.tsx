@@ -253,75 +253,124 @@ export default function Header() {
               sx={{
                 display: { xs: 'none', md: 'flex' },
                 gap: 0,
-                alignItems: 'center',
+                alignItems: 'stretch',
               }}
             >
-              {/* Active Tab: 賃貸 */}
+              {/* Active Category: 借りる > 賃貸 */}
               <Box
                 sx={{
                   px: 2.5,
-                  py: 1.5,
-                  bgcolor: '#8BC34A',
-                  color: 'white',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  borderRadius: '4px 4px 0 0',
-                  cursor: 'pointer',
+                  py: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '100px',
+                  borderLeft: '1px solid #E0E0E0',
                 }}
               >
-                賃貸
+                {/* 第1階層: ラベル（小さく控えめ） */}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontSize: '0.7rem',
+                    color: '#999',
+                    lineHeight: 1.2,
+                    mb: 0.5,
+                    fontWeight: 400,
+                  }}
+                >
+                  借りる
+                </Typography>
+
+                {/* 第2階層: ボタン（大きく目立つ） */}
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: '#8BC34A',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    px: 3,
+                    py: 0.8,
+                    borderRadius: '4px',
+                    textTransform: 'none',
+                    minWidth: 'auto',
+                    '&:hover': {
+                      bgcolor: '#7CB342',
+                    },
+                    boxShadow: 'none',
+                  }}
+                >
+                  賃貸
+                </Button>
               </Box>
 
-              {/* Inactive Tabs */}
+              {/* Inactive Categories */}
               {[
-                { label: '新築マンション', sublabel: '新築' },
-                { label: '中古マンション', sublabel: '中古' },
-                { label: '新築一戸建て', sublabel: '新築' },
-                { label: '中古一戸建て', sublabel: '中古' },
-                { label: '注文住宅・土地', sublabel: null },
-                { label: 'リフォーム', sublabel: null },
-                { label: '売却査定', sublabel: null },
-              ].map((item, index) => (
+                { main: 'マンションを買う', subs: ['新築', '中古'] },
+                { main: '一戸建てを買う', subs: ['新築', '中古'] },
+                { main: '建てる', subs: ['注文住宅', '土地'] },
+                { main: 'リフォームする', subs: ['リフォーム'] },
+                { main: '売る', subs: ['売却査定'] },
+                { main: '住まいの相談', subs: ['講座/相談'] },
+              ].map((category, index) => (
                 <Box
                   key={index}
                   sx={{
-                    px: 1.5,
-                    py: 1.5,
-                    color: '#666',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                    borderLeft: '1px solid #E0E0E0',
-                    '&:hover': {
-                      bgcolor: '#F5F5F5',
-                    },
+                    px: 2,
+                    py: 1,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 0.25,
+                    justifyContent: 'center',
+                    minWidth: category.subs.length > 1 ? '130px' : '100px',
+                    borderLeft: '1px solid #E0E0E0',
                   }}
                 >
-                  {item.sublabel && (
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontSize: '0.65rem',
-                        color: '#999',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {item.sublabel}
-                    </Typography>
-                  )}
+                  {/* 第1階層: ラベル（小さく控えめ） */}
                   <Typography
-                    variant="body2"
+                    variant="caption"
                     sx={{
-                      fontSize: '0.8rem',
-                      fontWeight: 500,
+                      fontSize: '0.7rem',
+                      color: '#999',
                       lineHeight: 1.2,
+                      mb: 0.5,
+                      fontWeight: 400,
                     }}
                   >
-                    {item.label.replace(item.sublabel || '', '')}
+                    {category.main}
                   </Typography>
+
+                  {/* 第2階層: ボタン（大きく目立つ） */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 0.8,
+                      alignItems: 'center',
+                    }}
+                  >
+                    {category.subs.map((sub, subIndex) => (
+                      <Button
+                        key={subIndex}
+                        variant="text"
+                        sx={{
+                          color: '#333',
+                          fontWeight: 600,
+                          fontSize: '0.95rem',
+                          px: 1.5,
+                          py: 0.5,
+                          textTransform: 'none',
+                          minWidth: 'auto',
+                          '&:hover': {
+                            bgcolor: '#F5F5F5',
+                          },
+                        }}
+                      >
+                        {sub}
+                      </Button>
+                    ))}
+                  </Box>
                 </Box>
               ))}
             </Box>
