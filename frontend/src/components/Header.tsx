@@ -193,67 +193,82 @@ export default function Header() {
             sx={{
               minHeight: { xs: '80px', md: '100px' },
               py: 1,
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
-            {/* Logo */}
-            <Link
-              href="/"
-              style={{
-                textDecoration: 'none',
+            {/* Left Section: Logo + Area (25% of width) */}
+            <Box
+              sx={{
+                flex: '0 0 25%',
                 display: 'flex',
                 alignItems: 'center',
-                marginRight: '32px',
+                gap: 3,
+                pr: 2,
               }}
             >
-              <Box
-                component="img"
-                src="/suumo-logo.svg"
-                alt="SUUMO"
-                sx={{
-                  height: { xs: '50px', md: '60px' },
-                  width: 'auto',
+              {/* Logo */}
+              <Link
+                href="/"
+                style={{
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flex: 1,
                 }}
-              />
-            </Link>
+              >
+                <Box
+                  component="img"
+                  src="/suumo-logo.svg"
+                  alt="SUUMO"
+                  sx={{
+                    height: { xs: '55px', md: '70px' },
+                    width: 'auto',
+                    maxWidth: '100%',
+                  }}
+                />
+              </Link>
 
-            {/* Area Selector (Design Only) */}
-            <Box
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                alignItems: 'center',
-                gap: 1,
-                mr: 4,
-              }}
-            >
-              <Typography
-                variant="body2"
+              {/* Area Selector (Design Only) */}
+              <Box
                 sx={{
-                  color: '#666',
-                  fontSize: '0.85rem',
+                  display: { xs: 'none', md: 'flex' },
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  gap: 0.3,
                 }}
               >
-                全国へ
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: 700,
-                  color: '#231815',
-                  fontSize: '1rem',
-                }}
-              >
-                関東版
-              </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: '#666',
+                    fontSize: '0.7rem',
+                  }}
+                >
+                  全国へ
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#231815',
+                    fontSize: '1.1rem',
+                    lineHeight: 1,
+                  }}
+                >
+                  関東版
+                </Typography>
+              </Box>
             </Box>
 
-            <Box sx={{ flexGrow: 1 }} />
-
-            {/* Category Navigation (Design Only) */}
+            {/* Right Section: Category Navigation (75% of width) */}
             <Box
               sx={{
+                flex: '0 0 75%',
                 display: { xs: 'none', md: 'flex' },
                 gap: 0,
                 alignItems: 'stretch',
+                justifyContent: 'flex-end',
               }}
             >
               {/* Active Category: 借りる > 賃貸 */}
