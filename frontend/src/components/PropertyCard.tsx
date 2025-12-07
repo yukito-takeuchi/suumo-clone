@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { Property } from '@/types';
+import { getImageUrl } from '@/lib/imageUtils';
 import TrainIcon from '@mui/icons-material/Train';
 import HomeIcon from '@mui/icons-material/Home';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
@@ -21,7 +22,9 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const mainImage = property.images?.[0]?.image_url || '/images/no-image.png';
+  const mainImage = property.images?.[0]?.image_url
+    ? getImageUrl(property.images[0].image_url)
+    : '/images/no-image.png';
 
   return (
     <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { query } from '../config/database';
 import pool from '../config/database';
+import { saveBase64Image, deleteImage } from '../utils/imageUpload';
 
 export const corporatePropertyController = {
   /**
@@ -107,10 +108,12 @@ export const corporatePropertyController = {
       // 画像を登録
       if (images && images.length > 0) {
         for (let i = 0; i < images.length; i++) {
+          // Save base64 image to file and get URL
+          const imageUrl = saveBase64Image(images[i]);
           await client.query(
             `INSERT INTO property_images (property_id, image_url, display_order)
              VALUES ($1, $2, $3)`,
-            [property.id, images[i], i + 1]
+            [property.id, imageUrl, i + 1]
           );
         }
       }
@@ -392,13 +395,29 @@ export const corporatePropertyController = {
 
       // 画像を更新（既存削除→新規追加）
       if (images !== undefined) {
+        // Get existing images to delete files
+        const existingImages = await client.query(
+          'SELECT image_url FROM property_images WHERE property_id = $1',
+          [id]
+        );
+
+        // Delete existing image files
+        existingImages.rows.forEach((row: any) => {
+          deleteImage(row.image_url);
+        });
+
+        // Delete existing image records
         await client.query('DELETE FROM property_images WHERE property_id = $1', [id]);
+
+        // Insert new images
         if (images.length > 0) {
           for (let i = 0; i < images.length; i++) {
+            // Save base64 image to file and get URL
+            const imageUrl = saveBase64Image(images[i]);
             await client.query(
               `INSERT INTO property_images (property_id, image_url, display_order)
                VALUES ($1, $2, $3)`,
-              [id, images[i], i + 1]
+              [id, imageUrl, i + 1]
             );
           }
         }

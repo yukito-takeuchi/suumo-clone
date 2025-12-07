@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 import { Property } from '@/types';
 import { getPropertyById } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { getImageUrl } from '@/lib/imageUtils';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import TrainIcon from '@mui/icons-material/Train';
 import HomeIcon from '@mui/icons-material/Home';
@@ -118,7 +119,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
               {/* メイン画像 */}
               <Box
                 component="img"
-                src={selectedImage || '/images/no-image.png'}
+                src={selectedImage ? getImageUrl(selectedImage) : '/images/no-image.png'}
                 alt={property.title}
                 sx={{
                   width: '100%',
@@ -150,7 +151,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                         onClick={() => setSelectedImage(image.image_url)}
                       >
                         <img
-                          src={image.image_url}
+                          src={getImageUrl(image.image_url)}
                           alt={`${property.title} ${index + 1}`}
                           style={{ width: '100%', height: 80, objectFit: 'cover' }}
                         />
