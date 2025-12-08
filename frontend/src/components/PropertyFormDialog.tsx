@@ -143,7 +143,7 @@ export default function PropertyFormDialog({
       setFloorNumber(property.floor_number || '');
       setDescription(property.description || '');
       setIsPublished(property.is_published);
-      setSelectedFeatures(property.features?.map((f) => f.feature_id) || []);
+      setSelectedFeatures(property.features?.map((f) => f.feature_id || f.id) || []);
       // Load existing images
       if (property.images && property.images.length > 0) {
         // Store original relative URLs

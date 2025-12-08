@@ -63,7 +63,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
             {/* カテゴリ */}
             <Chip
-              label={`賃貸${property.building_type?.name || 'マンション'}`}
+              label={`賃貸${property.building_type?.name || property.building_type_name || 'マンション'}`}
               size="small"
               sx={{ width: 'fit-content', bgcolor: 'grey.100' }}
             />
@@ -93,7 +93,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               {/* 住所 */}
               <Box sx={{ px: 1.5, py: 0.75, flex: 1, display: 'flex', alignItems: 'center' }}>
                 <Typography variant="body2" color="text.secondary">
-                  {property.prefecture?.name} {property.address}
+                  {property.prefecture?.name || property.prefecture_name} {property.address}
                 </Typography>
               </Box>
 
@@ -104,7 +104,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 {property.stations && property.stations.length > 0 ? (
                   property.stations.slice(0, 3).map((ps, index) => (
                     <Typography key={index} variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                      {ps.railway_line_name}/{ps.station_name} 歩{ps.walking_minutes}分
+                      {ps.railway_line_name}/{ps.name || ps.station_name} 歩{ps.walking_minutes}分
                     </Typography>
                   ))
                 ) : (
@@ -204,7 +204,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               </Box>
               <Box sx={{ flex: 2 }}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {property.floor_plan_type?.name}
+                  {property.floor_plan_type?.name || property.floor_plan_type_name || property.floor_plan_name}
                 </Typography>
                 <Typography variant="body2">
                   {property.area}m²
