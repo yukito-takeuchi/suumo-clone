@@ -3,6 +3,11 @@ import path from 'path';
 import crypto from 'crypto';
 
 export const saveBase64Image = (base64String: string): string => {
+  // If it's already a relative URL (existing image), return as-is
+  if (base64String.startsWith('/uploads/')) {
+    return base64String;
+  }
+
   // Remove data URL prefix (e.g., "data:image/jpeg;base64,")
   const matches = base64String.match(/^data:image\/(\w+);base64,(.+)$/);
 

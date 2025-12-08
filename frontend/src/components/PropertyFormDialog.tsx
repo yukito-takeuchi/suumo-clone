@@ -43,6 +43,7 @@ import {
   PropertyFeature,
   Property,
 } from '@/types';
+import { getImageUrl } from '@/lib/imageUtils';
 
 interface PropertyFormDialogProps {
   open: boolean;
@@ -83,6 +84,7 @@ export default function PropertyFormDialog({
   const [selectedFeatures, setSelectedFeatures] = useState<number[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]); // Store original relative URLs
 
   // Station data (max 3 stations)
   const [stations, setStations] = useState<
@@ -142,8 +144,16 @@ export default function PropertyFormDialog({
       setDescription(property.description || '');
       setIsPublished(property.is_published);
       setSelectedFeatures(property.features?.map((f) => f.feature_id) || []);
-      // Load existing images (always reset, even if empty)
-      setImagePreviews(property.images?.map((img) => img.image_url) || []);
+      // Load existing images
+      if (property.images && property.images.length > 0) {
+        // Store original relative URLs
+        setExistingImageUrls(property.images.map((img) => img.image_url));
+        // Store full URLs for preview display
+        setImagePreviews(property.images.map((img) => getImageUrl(img.image_url)));
+      } else {
+        setExistingImageUrls([]);
+        setImagePreviews([]);
+      }
       setImageFiles([]);
     } else {
       // Reset form for create mode
@@ -169,6 +179,7 @@ export default function PropertyFormDialog({
     setSelectedFeatures([]);
     setImageFiles([]);
     setImagePreviews([]);
+    setExistingImageUrls([]);
     setStations([
       { railwayLines: [], stationList: [], selectedRailwayLine: '', selectedStation: '', walkingMinutes: '' },
     ]);
@@ -238,7 +249,18 @@ export default function PropertyFormDialog({
   };
 
   const removeImage = (index: number) => {
-    setImageFiles(imageFiles.filter((_, i) => i !== index));
+    // Check if this is an existing image or new image
+    const existingImageCount = existingImageUrls.length;
+
+    if (index < existingImageCount) {
+      // Removing an existing image
+      setExistingImageUrls(existingImageUrls.filter((_, i) => i !== index));
+    } else {
+      // Removing a newly added image
+      const newImageIndex = index - existingImageCount;
+      setImageFiles(imageFiles.filter((_, i) => i !== newImageIndex));
+    }
+
     setImagePreviews(imagePreviews.filter((_, i) => i !== index));
   };
 
@@ -262,6 +284,10 @@ export default function PropertyFormDialog({
           walking_minutes: s.walkingMinutes,
         }));
 
+      // Prepare images: combine existing URLs and new base64 images
+      const newBase64Images = imagePreviews.slice(existingImageUrls.length);
+      const allImages = [...existingImageUrls, ...newBase64Images];
+
       const formData = {
         title,
         prefecture_id: prefectureId,
@@ -279,7 +305,7 @@ export default function PropertyFormDialog({
         is_published: isPublished,
         stations: stationData,
         feature_ids: selectedFeatures,
-        images: imagePreviews, // Base64 encoded images
+        images: allImages, // Existing relative URLs + new base64 images
       };
 
       await onSubmit(formData);
