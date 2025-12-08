@@ -91,6 +91,12 @@ export const getMyCorporateProperties = async (page: number = 1, limit: number =
   return response.data.data || { properties: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
 };
 
+// 企業ユーザー向け: 物件詳細取得
+export const getCorporatePropertyById = async (id: number): Promise<Property> => {
+  const response = await axios.get<ApiResponse<{ property: Property }>>(`/corporate/properties/${id}`);
+  return response.data.data.property;
+};
+
 // 企業ユーザー向け: 受信した問い合わせ一覧
 export const getCorporateInquiries = async (page: number = 1, limit: number = 20, status?: string) => {
   const params: any = { page, limit };

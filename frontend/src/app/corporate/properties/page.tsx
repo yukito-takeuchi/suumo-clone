@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getMyCorporateProperties } from '@/lib/api';
+import { getMyCorporateProperties, getCorporatePropertyById } from '@/lib/api';
 import { Property } from '@/types';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -77,10 +77,16 @@ export default function CorporatePropertiesPage() {
     setDialogOpen(true);
   };
 
-  const handleEditClick = (property: Property) => {
-    setDialogMode('edit');
-    setSelectedProperty(property);
-    setDialogOpen(true);
+  const handleEditClick = async (property: Property) => {
+    try {
+      // Fetch full property details including images
+      const fullProperty = await getCorporatePropertyById(property.id);
+      setDialogMode('edit');
+      setSelectedProperty(fullProperty);
+      setDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch property details:', error);
+    }
   };
 
   const handleDialogClose = () => {
