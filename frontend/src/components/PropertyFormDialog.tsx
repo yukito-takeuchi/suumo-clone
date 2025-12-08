@@ -144,6 +144,33 @@ export default function PropertyFormDialog({
       setDescription(property.description || '');
       setIsPublished(property.is_published);
       setSelectedFeatures(property.features?.map((f) => f.feature_id || f.id) || []);
+
+      // Load existing stations
+      if (property.stations && property.stations.length > 0) {
+        // Load station data asynchronously
+        const loadStationData = async () => {
+          const loadedStations = await Promise.all(
+            property.stations!.map(async (ps) => {
+              const railwayLines = await getRailwayLines(property.prefecture_id);
+              const stationList = ps.railway_line_id ? await getStations(ps.railway_line_id) : [];
+              return {
+                railwayLines,
+                stationList,
+                selectedRailwayLine: ps.railway_line_id?.toString() || '',
+                selectedStation: ps.station_id?.toString() || '',
+                walkingMinutes: ps.walking_minutes.toString(),
+              };
+            })
+          );
+          setStations(loadedStations);
+        };
+        loadStationData();
+      } else {
+        setStations([
+          { railwayLines: [], stationList: [], selectedRailwayLine: '', selectedStation: '', walkingMinutes: '' },
+        ]);
+      }
+
       // Load existing images
       if (property.images && property.images.length > 0) {
         // Store original relative URLs

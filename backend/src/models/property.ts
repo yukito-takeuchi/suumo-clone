@@ -326,8 +326,10 @@ export const propertyModel = {
       SELECT
         ps.walking_minutes,
         ps.display_order,
+        ps.station_id,
         s.id,
         s.name,
+        s.railway_line_id,
         rl.name as railway_line_name
       FROM property_stations ps
       JOIN stations s ON ps.station_id = s.id

@@ -64,6 +64,7 @@ export interface PropertyStation {
   station_id?: number;
   station_name?: string;
   name?: string;
+  railway_line_id?: number;
   railway_line_name: string;
   walking_minutes: number;
   display_order: number;
