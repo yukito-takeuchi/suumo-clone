@@ -113,15 +113,13 @@ async function seedPropertiesFull() {
         );
       }
 
-      // ダミー画像追加
-      const imageCount = 3 + Math.floor(Math.random() * 3); // 3〜5枚
-      for (let k = 0; k < imageCount; k++) {
-        await query(
-          `INSERT INTO property_images (property_id, image_url, display_order)
-           VALUES ($1, $2, $3)`,
-          [propertyId, `https://example.com/images/property-${propertyId}-${k + 1}.jpg`, k + 1]
-        );
-      }
+      // 画像追加（各物件に1枚ずつ）
+      const imageUrl = `/uploads/seed/property-${i + 1}.jpg`;
+      await query(
+        `INSERT INTO property_images (property_id, image_url, display_order)
+         VALUES ($1, $2, $3)`,
+        [propertyId, imageUrl, 1]
+      );
 
       console.log(`✅ Created property ${i + 1}/30: ${property.title}`);
     }

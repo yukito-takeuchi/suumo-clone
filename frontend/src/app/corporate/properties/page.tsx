@@ -21,11 +21,13 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getMyCorporateProperties } from '@/lib/api';
+import { getMyCorporateProperties, getCorporatePropertyById } from '@/lib/api';
 import { Property } from '@/types';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import PropertyFormDialog from '@/components/PropertyFormDialog';
+import axios from '@/lib/axios';
 
 export default function CorporatePropertiesPage() {
   const router = useRouter();
@@ -35,6 +37,9 @@ export default function CorporatePropertiesPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || user?.role !== 'corporate')) {
@@ -66,6 +71,42 @@ export default function CorporatePropertiesPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleCreateClick = () => {
+    setDialogMode('create');
+    setSelectedProperty(null);
+    setDialogOpen(true);
+  };
+
+  const handleEditClick = async (property: Property) => {
+    try {
+      // Fetch full property details including images
+      const fullProperty = await getCorporatePropertyById(property.id);
+      setDialogMode('edit');
+      setSelectedProperty(fullProperty);
+      setDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch property details:', error);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedProperty(null);
+  };
+
+  const handlePropertySubmit = async (data: any) => {
+    try {
+      if (dialogMode === 'create') {
+        await axios.post('/corporate/properties', data);
+      } else {
+        await axios.put(`/corporate/properties/${selectedProperty?.id}`, data);
+      }
+      await fetchProperties();
+    } catch (error) {
+      throw error;
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -88,7 +129,7 @@ export default function CorporatePropertiesPage() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => router.push('/corporate/properties/new')}
+            onClick={handleCreateClick}
           >
             新規物件登録
           </Button>
@@ -111,7 +152,7 @@ export default function CorporatePropertiesPage() {
             <Button
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() => router.push('/corporate/properties/new')}
+              onClick={handleCreateClick}
             >
               新規物件登録
             </Button>
@@ -169,7 +210,7 @@ export default function CorporatePropertiesPage() {
                           <Tooltip title="編集">
                             <IconButton
                               size="small"
-                              onClick={() => router.push(`/corporate/properties/${property.id}/edit`)}
+                              onClick={() => handleEditClick(property)}
                             >
                               <EditIcon fontSize="small" />
                             </IconButton>
@@ -197,6 +238,15 @@ export default function CorporatePropertiesPage() {
             )}
           </>
         )}
+
+        {/* Property Form Dialog */}
+        <PropertyFormDialog
+          open={dialogOpen}
+          onClose={handleDialogClose}
+          onSubmit={handlePropertySubmit}
+          property={selectedProperty}
+          mode={dialogMode}
+        />
       </Container>
     </Box>
   );

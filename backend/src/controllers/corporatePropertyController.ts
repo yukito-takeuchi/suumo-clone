@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { query } from '../config/database';
 import pool from '../config/database';
+import { saveBase64Image, deleteImage } from '../utils/imageUpload';
 
 export const corporatePropertyController = {
   /**
@@ -37,6 +38,7 @@ export const corporatePropertyController = {
         feature_ids,
         is_published,
         description,
+        images,
       } = req.body;
 
       // バリデーション
@@ -99,6 +101,19 @@ export const corporatePropertyController = {
             `INSERT INTO property_property_features (property_id, feature_id)
              VALUES ($1, $2)`,
             [property.id, featureId]
+          );
+        }
+      }
+
+      // 画像を登録
+      if (images && images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          // Save base64 image to file and get URL
+          const imageUrl = saveBase64Image(images[i]);
+          await client.query(
+            `INSERT INTO property_images (property_id, image_url, display_order)
+             VALUES ($1, $2, $3)`,
+            [property.id, imageUrl, i + 1]
           );
         }
       }
@@ -170,10 +185,32 @@ export const corporatePropertyController = {
 
       const total = parseInt(countResult.rows[0].count);
 
+      // Get property IDs
+      const propertyIds = result.rows.map((p: any) => p.id);
+
+      // Fetch images for all properties
+      let images: any[] = [];
+      if (propertyIds.length > 0) {
+        const imagesResult = await query(
+          `SELECT property_id, id, image_url, display_order
+           FROM property_images
+           WHERE property_id = ANY($1)
+           ORDER BY property_id, display_order`,
+          [propertyIds]
+        );
+        images = imagesResult.rows;
+      }
+
+      // Attach images to properties
+      const propertiesWithImages = result.rows.map((property: any) => ({
+        ...property,
+        images: images.filter((img: any) => img.property_id === property.id),
+      }));
+
       res.json({
         success: true,
         data: {
-          properties: result.rows,
+          properties: propertiesWithImages,
           pagination: {
             page: Number(page),
             limit: Number(limit),
@@ -320,6 +357,7 @@ export const corporatePropertyController = {
         feature_ids,
         is_published,
         description,
+        images,
       } = req.body;
 
       if (stations && stations.length > 3) {
@@ -372,6 +410,40 @@ export const corporatePropertyController = {
               `INSERT INTO property_property_features (property_id, feature_id)
                VALUES ($1, $2)`,
               [id, featureId]
+            );
+          }
+        }
+      }
+
+      // 画像を更新（既存削除→新規追加）
+      if (images !== undefined) {
+        // Get existing images
+        const existingImages = await client.query(
+          'SELECT image_url FROM property_images WHERE property_id = $1',
+          [id]
+        );
+
+        // Determine which images to delete (images not in the new list)
+        const newImageUrls = new Set(images.filter((img: string) => img.startsWith('/uploads/')));
+        const imagesToDelete = existingImages.rows.filter((row: any) => !newImageUrls.has(row.image_url));
+
+        // Delete removed image files
+        imagesToDelete.forEach((row: any) => {
+          deleteImage(row.image_url);
+        });
+
+        // Delete existing image records
+        await client.query('DELETE FROM property_images WHERE property_id = $1', [id]);
+
+        // Insert images (existing URLs + new base64 images)
+        if (images.length > 0) {
+          for (let i = 0; i < images.length; i++) {
+            // Save base64 image to file and get URL (or return existing URL as-is)
+            const imageUrl = saveBase64Image(images[i]);
+            await client.query(
+              `INSERT INTO property_images (property_id, image_url, display_order)
+               VALUES ($1, $2, $3)`,
+              [id, imageUrl, i + 1]
             );
           }
         }
