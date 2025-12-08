@@ -52,9 +52,8 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             src={mainImage}
             alt={property.title}
             sx={{
-              width: 200,
-              height: 150,
-              objectFit: 'cover',
+              maxWidth: 200,
+              height: 'auto',
               borderRadius: 1,
               flexShrink: 0,
             }}
@@ -142,9 +141,8 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             src={mainImage}
             alt={property.title}
             sx={{
-              width: 120,
-              height: 90,
-              objectFit: 'cover',
+              maxWidth: 120,
+              height: 'auto',
               borderRadius: 1,
               flexShrink: 0,
             }}
