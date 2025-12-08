@@ -192,7 +192,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>間取り</TableCell>
-                    <TableCell>{property.floor_plan_type?.name}</TableCell>
+                    <TableCell>{property.floor_plan_type?.name || property.floor_plan_type_name || property.floor_plan_name}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>専有面積</TableCell>
@@ -200,7 +200,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>建物種別</TableCell>
-                    <TableCell>{property.building_type?.name}</TableCell>
+                    <TableCell>{property.building_type?.name || property.building_type_name}</TableCell>
                   </TableRow>
                   {property.building_age && (
                     <TableRow>
@@ -226,7 +226,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
               <Box sx={{ mb: 2, display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                 <LocationOnIcon color="action" />
                 <Typography>
-                  {property.prefecture?.name} {property.address}
+                  {property.prefecture?.name || property.prefecture_name} {property.address}
                 </Typography>
               </Box>
 
@@ -239,7 +239,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                     >
                       <TrainIcon sx={{ fontSize: 20, mr: 1, color: 'text.secondary' }} />
                       <Typography>
-                        {ps.railway_line_name} {ps.station_name} 徒歩{ps.walking_minutes}分
+                        {ps.railway_line_name} {ps.name || ps.station_name} 徒歩{ps.walking_minutes}分
                       </Typography>
                     </Box>
                   ))}
@@ -256,7 +256,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                     {property.features.map((feature, index) => (
-                      <Chip key={index} label={feature.feature_name} color="primary" variant="outlined" />
+                      <Chip key={index} label={feature.feature_name || feature.name} color="primary" variant="outlined" />
                     ))}
                   </Stack>
                   <Divider sx={{ my: 3 }} />
@@ -296,7 +296,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <HomeIcon fontSize="small" color="action" />
                   <Typography variant="body2">
-                    {property.floor_plan_type?.name} / {property.building_type?.name}
+                    {property.floor_plan_type?.name || property.floor_plan_type_name || property.floor_plan_name} / {property.building_type?.name || property.building_type_name}
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
