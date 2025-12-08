@@ -150,44 +150,80 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             }}
           />
 
-          {/* 右：号室情報 */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-            {/* 階数 */}
-            <Typography variant="body2" color="text.secondary">
-              {property.floor_number ? `${property.floor_number}階` : '-'}
-            </Typography>
+          {/* 右：号室情報（テーブル形式） */}
+          <Box sx={{ flex: 1 }}>
+            {/* カテゴリラベル（1行目） */}
+            <Box sx={{ display: 'flex', borderBottom: '1px solid', borderColor: 'grey.300', pb: 0.5, mb: 0.5 }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  階
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  賃料/管理費
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  敷金/礼金
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  間取り/専有面積
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 1, textAlign: 'center' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  お気に入り
+                </Typography>
+              </Box>
+            </Box>
 
-            {/* 賃料/管理費 */}
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-              {property.rent.toLocaleString()}円
-              <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                / 管理費 {property.management_fee?.toLocaleString() || 0}円
-              </Typography>
-            </Typography>
-
-            {/* 敷金/礼金 */}
-            <Typography variant="body2" color="text.secondary">
-              敷金 {property.deposit ? `${(property.deposit / property.rent).toFixed(1)}ヶ月` : '-'} /
-              礼金 {property.key_money ? `${(property.key_money / property.rent).toFixed(1)}ヶ月` : '-'}
-            </Typography>
-
-            {/* 間取り/専有面積 */}
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {property.floor_plan_type?.name} / {property.area}m²
-            </Typography>
-          </Box>
-
-          {/* お気に入りボタン */}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.preventDefault();
-                // お気に入り機能は未実装
-              }}
-            >
-              <FavoriteBorderIcon />
-            </IconButton>
+            {/* 情報（2行目） */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="body2">
+                  {property.floor_number ? `${property.floor_number}階` : '-'}
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                  {property.rent.toLocaleString()}円
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  管理費 {property.management_fee?.toLocaleString() || 0}円
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="body2">
+                  敷金 {property.deposit ? `${(property.deposit / property.rent).toFixed(1)}ヶ月` : '-'}
+                </Typography>
+                <Typography variant="body2">
+                  礼金 {property.key_money ? `${(property.key_money / property.rent).toFixed(1)}ヶ月` : '-'}
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 2 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {property.floor_plan_type?.name}
+                </Typography>
+                <Typography variant="body2">
+                  {property.area}m²
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 1, textAlign: 'center' }}>
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // お気に入り機能は未実装
+                  }}
+                >
+                  <FavoriteBorderIcon />
+                </IconButton>
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Card>
