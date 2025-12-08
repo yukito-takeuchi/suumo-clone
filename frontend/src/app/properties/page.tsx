@@ -147,13 +147,11 @@ export default function PropertiesPage() {
         {/* 物件一覧 */}
         {!loading && properties.length > 0 && (
           <>
-            <Grid container spacing={3}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {properties.map((property) => (
-                <Grid item xs={12} key={property.id}>
-                  <PropertyCard property={property} />
-                </Grid>
+                <PropertyCard key={property.id} property={property} />
               ))}
-            </Grid>
+            </Box>
 
             {/* ページネーション */}
             {totalPages > 1 && (
