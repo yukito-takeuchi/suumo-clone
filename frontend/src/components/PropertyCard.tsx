@@ -30,9 +30,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     : '';
 
   return (
-    <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>
+    <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
       <Card
         sx={{
+          width: '100%',
           display: 'flex',
           flexDirection: 'column',
           transition: 'transform 0.2s, box-shadow 0.2s',
