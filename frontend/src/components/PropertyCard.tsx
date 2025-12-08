@@ -80,23 +80,54 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               {property.title}
             </Typography>
 
-            {/* 住所 + 駅徒歩 + 築年数 + 階建（枠線付き1行） */}
+            {/* 住所 | 駅情報 | 建物情報（枠線付き3分割） */}
             <Box
               sx={{
                 border: '1px solid',
                 borderColor: 'grey.300',
                 borderRadius: 1,
-                px: 1.5,
-                py: 0.75,
                 bgcolor: 'grey.50',
+                display: 'flex',
+                minHeight: 60,
               }}
             >
-              <Typography variant="body2" color="text.secondary">
-                {property.prefecture?.name} {property.address}
-                {stationInfo && ` ${stationInfo}`}
-                {property.building_age && ` 築${property.building_age}年`}
-                {property.floor_number && ` ${property.floor_number}階建`}
-              </Typography>
+              {/* 住所 */}
+              <Box sx={{ px: 1.5, py: 0.75, flex: 1, display: 'flex', alignItems: 'center' }}>
+                <Typography variant="body2" color="text.secondary">
+                  {property.prefecture?.name} {property.address}
+                </Typography>
+              </Box>
+
+              <Divider orientation="vertical" flexItem />
+
+              {/* 駅情報 */}
+              <Box sx={{ px: 1.5, py: 0.75, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                {property.stations && property.stations.length > 0 ? (
+                  property.stations.slice(0, 3).map((ps, index) => (
+                    <Typography key={index} variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                      {ps.railway_line_name}/{ps.station_name} 歩{ps.walking_minutes}分
+                    </Typography>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">-</Typography>
+                )}
+              </Box>
+
+              <Divider orientation="vertical" flexItem />
+
+              {/* 建物情報 */}
+              <Box sx={{ px: 1.5, py: 0.75, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                {property.building_age && (
+                  <Typography variant="body2" color="text.secondary">
+                    築{property.building_age}年
+                  </Typography>
+                )}
+                {property.floor_number && (
+                  <Typography variant="body2" color="text.secondary">
+                    {property.floor_number}階建
+                  </Typography>
+                )}
+              </Box>
             </Box>
           </Box>
         </Box>
