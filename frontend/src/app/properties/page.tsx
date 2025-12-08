@@ -38,7 +38,7 @@ export default function PropertiesPage() {
         };
 
         const stationIds = searchParams.get('station_ids');
-        if (stationIds) params.station_ids = stationIds;
+        if (stationIds) params.station_ids = stationIds.split(',').map(Number);
 
         const rentMin = searchParams.get('rent_min');
         if (rentMin) params.rent_min = Number(rentMin);
@@ -47,13 +47,13 @@ export default function PropertiesPage() {
         if (rentMax) params.rent_max = Number(rentMax);
 
         const floorPlanTypeIds = searchParams.get('floor_plan_type_ids');
-        if (floorPlanTypeIds) params.floor_plan_type_ids = floorPlanTypeIds;
+        if (floorPlanTypeIds) params.floor_plan_type_ids = floorPlanTypeIds.split(',').map(Number);
 
         const buildingTypeIds = searchParams.get('building_type_ids');
-        if (buildingTypeIds) params.building_type_ids = buildingTypeIds;
+        if (buildingTypeIds) params.building_type_ids = buildingTypeIds.split(',').map(Number);
 
         const featureIds = searchParams.get('feature_ids');
-        if (featureIds) params.feature_ids = featureIds;
+        if (featureIds) params.feature_ids = featureIds.split(',').map(Number);
 
         const walkingMinutes = searchParams.get('walking_minutes');
         if (walkingMinutes) params.walking_minutes = Number(walkingMinutes);

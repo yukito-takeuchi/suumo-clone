@@ -5,6 +5,22 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  paramsSerializer: {
+    serialize: (params) => {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            // 配列はカンマ区切りの文字列に変換
+            searchParams.append(key, value.join(','));
+          } else {
+            searchParams.append(key, String(value));
+          }
+        }
+      });
+      return searchParams.toString();
+    },
+  },
 });
 
 // リクエストインターセプター（認証トークンを自動付与）
