@@ -13,9 +13,13 @@ export const getImageUrl = (imagePath: string): string => {
 
   // If it's a relative path, prepend backend URL
   if (imagePath.startsWith('/')) {
-    return `${BACKEND_URL}${imagePath}`;
+    const fullUrl = `${BACKEND_URL}${imagePath}`;
+    console.log('Image URL conversion:', imagePath, '->', fullUrl);
+    return fullUrl;
   }
 
   // Otherwise, assume it's relative and prepend /uploads/
-  return `${BACKEND_URL}/uploads/${imagePath}`;
+  const fullUrl = `${BACKEND_URL}/uploads/${imagePath}`;
+  console.log('Image URL conversion:', imagePath, '->', fullUrl);
+  return fullUrl;
 };
