@@ -5,3 +5,4 @@ dist/
 .DS_Store
 firebase-adminsdk.json
 gcs-keyfile.json
+public/uploads/
