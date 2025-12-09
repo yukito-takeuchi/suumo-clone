@@ -17,7 +17,6 @@ import {
   Alert,
   Breadcrumbs,
   Link as MuiLink,
-  Grid,
   Card,
   CardContent,
 } from '@mui/material';
@@ -185,18 +184,14 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
           </Alert>
         )}
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
+        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+          <Box sx={{ flex: { md: 2 } }}>
             {/* 問い合わせ内容 */}
             <Paper sx={{ p: 3, mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                 <Chip
                   label={getStatusLabel(inquiry.status)}
                   color={getStatusColor(inquiry.status)}
-                />
-                <Chip
-                  label={getInquiryTypeLabel(inquiry.inquiry_type)}
-                  variant="outlined"
                 />
               </Box>
 
@@ -224,7 +219,7 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
             </Paper>
 
             {/* 対象物件 */}
-            {inquiry.property && (
+            {inquiry.property_title && (
               <Card sx={{ mb: 3 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -233,28 +228,44 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                       対象物件
                     </Typography>
                   </Box>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                    <Chip
+                      label={`賃貸${inquiry.building_type_name || ''}`}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                    <Chip
+                      label={inquiry.floor_plan_type_name || ''}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Box>
                   <Typography variant="h6" sx={{ mb: 1 }}>
-                    {inquiry.property.title}
+                    {inquiry.property_title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {inquiry.property.prefecture?.name} {inquiry.property.address}
+                    {inquiry.prefecture_name} {inquiry.property_address}
                   </Typography>
-                  <Typography variant="body1" color="primary" sx={{ fontWeight: 600, mb: 2 }}>
-                    賃料: {inquiry.property.rent.toLocaleString()}円
+                  <Typography variant="body1" color="primary" sx={{ fontWeight: 600, mb: 1 }}>
+                    賃料: {inquiry.property_rent?.toLocaleString()}円 / 管理費: {inquiry.property_management_fee?.toLocaleString() || 0}円
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    専有面積: {inquiry.area}㎡ / 築{inquiry.building_age}年
                   </Typography>
                   <Button
                     variant="outlined"
                     size="small"
-                    onClick={() => router.push(`/properties/${inquiry.property?.id}`)}
+                    onClick={() => router.push(`/properties/${inquiry.property_id}`)}
                   >
                     物件詳細を見る
                   </Button>
                 </CardContent>
               </Card>
             )}
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: { md: 1 } }}>
             {/* ステータス更新 */}
             <Paper sx={{ p: 3, mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
@@ -326,8 +337,8 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                 </Typography>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

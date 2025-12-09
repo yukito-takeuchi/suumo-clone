@@ -169,8 +169,8 @@ export default function CorporateInquiriesPage() {
                 <TableHead>
                   <TableRow sx={{ bgcolor: 'grey.100' }}>
                     <TableCell sx={{ fontWeight: 600 }}>ステータス</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>種別</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>物件名</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>住所</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>お名前</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>メール</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>電話番号</TableCell>
@@ -189,15 +189,13 @@ export default function CorporateInquiriesPage() {
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip
-                          label={getInquiryTypeLabel(inquiry.inquiry_type)}
-                          variant="outlined"
-                          size="small"
-                        />
+                        <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
+                          {inquiry.property_title || '物件情報なし'}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
-                          {inquiry.property?.title || '物件情報なし'}
+                        <Typography variant="body2" noWrap sx={{ maxWidth: 180 }}>
+                          {inquiry.prefecture_name} {inquiry.property_address}
                         </Typography>
                       </TableCell>
                       <TableCell>{inquiry.contact_name}</TableCell>

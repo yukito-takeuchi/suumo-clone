@@ -86,9 +86,9 @@ export default function InquiryPage({ params }: { params: { id: string } }) {
       await createInquiry({
         property_id: Number(params.id),
         inquiry_type: inquiryType,
-        contact_name: contactName,
-        contact_email: contactEmail,
-        contact_phone: contactPhone,
+        name: contactName,
+        email: contactEmail,
+        phone: contactPhone,
         message: message || undefined,
       });
 

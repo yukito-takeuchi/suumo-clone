@@ -87,7 +87,7 @@ export default function ProfilePage() {
             <ListItem>
               <ListItemText
                 primary="Firebase UID"
-                secondary={user.firebase_uid}
+                secondary={user.firebaseUid}
                 primaryTypographyProps={{ fontWeight: 600 }}
               />
             </ListItem>
@@ -105,15 +105,7 @@ export default function ProfilePage() {
               />
             </ListItem>
 
-            <ListItem>
-              <ListItemText
-                primary="登録日"
-                secondary={new Date(user.created_at).toLocaleDateString('ja-JP')}
-                primaryTypographyProps={{ fontWeight: 600 }}
-              />
-            </ListItem>
-
-            {profile && user.role === 'individual' && 'name' in profile && (
+            {profile && user.role === 'individual' && 'first_name' in profile && (
               <>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ fontWeight: 600, px: 2, mb: 1 }}>
@@ -122,7 +114,7 @@ export default function ProfilePage() {
                 <ListItem>
                   <ListItemText
                     primary="氏名"
-                    secondary={profile.name || '未設定'}
+                    secondary={`${profile.last_name} ${profile.first_name}` || '未設定'}
                     primaryTypographyProps={{ fontWeight: 600 }}
                   />
                 </ListItem>
@@ -146,13 +138,6 @@ export default function ProfilePage() {
                   <ListItemText
                     primary="企業名"
                     secondary={profile.company_name || '未設定'}
-                    primaryTypographyProps={{ fontWeight: 600 }}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="担当者名"
-                    secondary={profile.contact_name || '未設定'}
                     primaryTypographyProps={{ fontWeight: 600 }}
                   />
                 </ListItem>

@@ -51,8 +51,23 @@ export const getPropertyFeatures = async (): Promise<PropertyFeature[]> => {
 export const searchProperties = async (
   params: PropertySearchParams
 ): Promise<PropertySearchResult> => {
-  const response = await axios.get<ApiResponse<PropertySearchResult>>('/properties', { params });
-  return response.data.data || { properties: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+  const response = await axios.get<ApiResponse<any>>('/properties', { params });
+  const data = response.data.data;
+
+  if (!data) {
+    return { properties: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+  }
+
+  // バックエンドのフラット構造をネスト構造に変換
+  return {
+    properties: data.properties || [],
+    pagination: {
+      page: data.page || 1,
+      limit: data.limit || 20,
+      total: data.total || 0,
+      totalPages: data.totalPages || 0,
+    },
+  };
 };
 
 // 物件詳細取得

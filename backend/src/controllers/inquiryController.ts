@@ -350,14 +350,27 @@ export const inquiryController = {
 
       const result = await query(
         `SELECT i.*,
+                p.id as property_id,
                 p.title as property_title,
                 p.address as property_address,
                 p.rent as property_rent,
                 p.management_fee as property_management_fee,
-                pref.name as prefecture_name
+                p.floor_number,
+                p.building_age,
+                p.area,
+                p.deposit,
+                p.key_money,
+                pref.id as prefecture_id,
+                pref.name as prefecture_name,
+                bt.id as building_type_id,
+                bt.name as building_type_name,
+                fpt.id as floor_plan_type_id,
+                fpt.name as floor_plan_type_name
          FROM inquiries i
          JOIN properties p ON i.property_id = p.id
          LEFT JOIN prefectures pref ON p.prefecture_id = pref.id
+         LEFT JOIN building_types bt ON p.building_type_id = bt.id
+         LEFT JOIN floor_plan_types fpt ON p.floor_plan_type_id = fpt.id
          WHERE i.id = $1 AND p.corporate_user_id = $2`,
         [id, req.user.userId]
       );
@@ -374,9 +387,7 @@ export const inquiryController = {
 
       res.json({
         success: true,
-        data: {
-          inquiry: result.rows[0],
-        },
+        data: result.rows[0],
       });
     } catch (error) {
       console.error('Get corporate inquiry error:', error);

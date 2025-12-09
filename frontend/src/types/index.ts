@@ -34,13 +34,17 @@ export interface Property {
   description: string;
   prefecture_id: number;
   prefecture_name?: string;
+  prefecture?: Prefecture;
   address: string;
   building_type_id: number;
   building_type_name?: string;
+  building_type?: BuildingType;
   building_age: number;
   floor_number: number;
   floor_plan_type_id: number;
   floor_plan_name?: string;
+  floor_plan_type_name?: string;
+  floor_plan_type?: FloorPlanType;
   area: number;
   rent: number;
   management_fee: number;
@@ -56,9 +60,11 @@ export interface Property {
 
 export interface PropertyStation {
   id: number;
-  property_id: number;
-  station_id: number;
-  station_name: string;
+  property_id?: number;
+  station_id?: number;
+  station_name?: string;
+  name?: string;
+  railway_line_id?: number;
   railway_line_name: string;
   walking_minutes: number;
   display_order: number;
@@ -73,8 +79,10 @@ export interface PropertyImage {
 
 export interface PropertyFeature {
   id: number;
-  name: string;
-  icon: string;
+  feature_id: number;
+  feature_name: string;
+  name?: string;
+  icon?: string;
 }
 
 // 検索関連
@@ -151,9 +159,18 @@ export interface Inquiry {
   property_title?: string;
   property_address?: string;
   property_rent?: number;
+  property_management_fee?: number;
   prefecture_name?: string;
+  building_type_name?: string;
+  floor_plan_type_name?: string;
+  area?: number;
+  building_age?: number;
+  floor_number?: number;
+  deposit?: number;
+  key_money?: number;
   company_name?: string;
   company_phone?: string;
+  property?: Property;
 }
 
 export interface CreateInquiryParams {

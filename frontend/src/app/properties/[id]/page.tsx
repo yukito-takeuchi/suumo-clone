@@ -5,7 +5,6 @@ import {
   Container,
   Box,
   Typography,
-  Grid,
   Paper,
   Chip,
   Divider,
@@ -112,9 +111,9 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
           <Typography color="text.primary">{property.title}</Typography>
         </Breadcrumbs>
 
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
           {/* 左カラム: 画像 */}
-          <Grid item xs={12} md={8}>
+          <Box sx={{ flex: { md: 2 } }}>
             <Paper sx={{ p: 0, overflow: 'hidden' }}>
               {/* メイン画像 */}
               <Box
@@ -192,7 +191,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>間取り</TableCell>
-                    <TableCell>{property.floor_plan_type?.name}</TableCell>
+                    <TableCell>{property.floor_plan_type?.name || property.floor_plan_type_name || property.floor_plan_name}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>専有面積</TableCell>
@@ -200,7 +199,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>建物種別</TableCell>
-                    <TableCell>{property.building_type?.name}</TableCell>
+                    <TableCell>{property.building_type?.name || property.building_type_name}</TableCell>
                   </TableRow>
                   {property.building_age && (
                     <TableRow>
@@ -226,7 +225,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
               <Box sx={{ mb: 2, display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                 <LocationOnIcon color="action" />
                 <Typography>
-                  {property.prefecture?.name} {property.address}
+                  {property.prefecture?.name || property.prefecture_name} {property.address}
                 </Typography>
               </Box>
 
@@ -239,7 +238,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                     >
                       <TrainIcon sx={{ fontSize: 20, mr: 1, color: 'text.secondary' }} />
                       <Typography>
-                        {ps.railway_line_name} {ps.station_name} 徒歩{ps.walking_minutes}分
+                        {ps.railway_line_name} {ps.name || ps.station_name} 徒歩{ps.walking_minutes}分
                       </Typography>
                     </Box>
                   ))}
@@ -256,7 +255,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                     {property.features.map((feature, index) => (
-                      <Chip key={index} label={feature.feature_name} color="primary" variant="outlined" />
+                      <Chip key={index} label={feature.feature_name || feature.name} color="primary" variant="outlined" />
                     ))}
                   </Stack>
                   <Divider sx={{ my: 3 }} />
@@ -275,10 +274,10 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                 </>
               )}
             </Paper>
-          </Grid>
+          </Box>
 
           {/* 右カラム: 物件情報サマリー・問い合わせボタン */}
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: { md: 1 } }}>
             <Paper sx={{ p: 3, position: 'sticky', top: 80 }}>
               <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
                 {property.title}
@@ -296,7 +295,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <HomeIcon fontSize="small" color="action" />
                   <Typography variant="body2">
-                    {property.floor_plan_type?.name} / {property.building_type?.name}
+                    {property.floor_plan_type?.name || property.floor_plan_type_name || property.floor_plan_name} / {property.building_type?.name || property.building_type_name}
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -328,8 +327,8 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   : 'ログインが必要です'}
               </Typography>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

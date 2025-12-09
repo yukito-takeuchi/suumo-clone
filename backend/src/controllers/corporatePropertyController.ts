@@ -805,7 +805,7 @@ async function getPropertyDetail(propertyId: number) {
 
   // 駅情報取得
   const stationsResult = await query(
-    `SELECT ps.*, s.name as station_name, rl.name as railway_line_name
+    `SELECT ps.*, s.name as station_name, s.railway_line_id, rl.name as railway_line_name
      FROM property_stations ps
      JOIN stations s ON ps.station_id = s.id
      JOIN railway_lines rl ON s.railway_line_id = rl.id

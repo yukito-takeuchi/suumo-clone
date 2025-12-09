@@ -38,7 +38,7 @@ export default function PropertiesPage() {
         };
 
         const stationIds = searchParams.get('station_ids');
-        if (stationIds) params.station_ids = stationIds;
+        if (stationIds) params.station_ids = stationIds.split(',').map(Number);
 
         const rentMin = searchParams.get('rent_min');
         if (rentMin) params.rent_min = Number(rentMin);
@@ -47,16 +47,16 @@ export default function PropertiesPage() {
         if (rentMax) params.rent_max = Number(rentMax);
 
         const floorPlanTypeIds = searchParams.get('floor_plan_type_ids');
-        if (floorPlanTypeIds) params.floor_plan_type_ids = floorPlanTypeIds;
+        if (floorPlanTypeIds) params.floor_plan_type_ids = floorPlanTypeIds.split(',').map(Number);
 
         const buildingTypeIds = searchParams.get('building_type_ids');
-        if (buildingTypeIds) params.building_type_ids = buildingTypeIds;
+        if (buildingTypeIds) params.building_type_ids = buildingTypeIds.split(',').map(Number);
 
         const featureIds = searchParams.get('feature_ids');
-        if (featureIds) params.feature_ids = featureIds;
+        if (featureIds) params.feature_ids = featureIds.split(',').map(Number);
 
         const walkingMinutes = searchParams.get('walking_minutes');
-        if (walkingMinutes) params.walking_minutes = Number(walkingMinutes);
+        if (walkingMinutes) params.walking_minutes_max = Number(walkingMinutes);
 
         const areaMin = searchParams.get('area_min');
         if (areaMin) params.area_min = Number(areaMin);
@@ -65,7 +65,7 @@ export default function PropertiesPage() {
         if (areaMax) params.area_max = Number(areaMax);
 
         const buildingAge = searchParams.get('building_age');
-        if (buildingAge) params.building_age = Number(buildingAge);
+        if (buildingAge) params.building_age_max = Number(buildingAge);
 
         const keyword = searchParams.get('keyword');
         if (keyword) params.keyword = keyword;
@@ -147,13 +147,11 @@ export default function PropertiesPage() {
         {/* 物件一覧 */}
         {!loading && properties.length > 0 && (
           <>
-            <Grid container spacing={3}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {properties.map((property) => (
-                <Grid item xs={12} sm={6} md={4} key={property.id}>
-                  <PropertyCard property={property} />
-                </Grid>
+                <PropertyCard key={property.id} property={property} />
               ))}
-            </Grid>
+            </Box>
 
             {/* ページネーション */}
             {totalPages > 1 && (
