@@ -156,9 +156,9 @@ export default function PropertyFormDialog({
               return {
                 railwayLines,
                 stationList,
-                selectedRailwayLine: ps.railway_line_id?.toString() || '',
-                selectedStation: ps.station_id?.toString() || '',
-                walkingMinutes: ps.walking_minutes.toString(),
+                selectedRailwayLine: (ps.railway_line_id ? ps.railway_line_id : '') as number | '',
+                selectedStation: (ps.station_id ? ps.station_id : '') as number | '',
+                walkingMinutes: (ps.walking_minutes ? ps.walking_minutes : '') as number | '',
               };
             })
           );
