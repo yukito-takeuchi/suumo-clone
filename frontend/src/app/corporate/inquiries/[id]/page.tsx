@@ -20,7 +20,6 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -185,8 +184,8 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
           </Alert>
         )}
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
+        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+          <Box sx={{ flex: { md: 2 } }}>
             {/* 問い合わせ内容 */}
             <Paper sx={{ p: 3, mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -264,9 +263,9 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                 </CardContent>
               </Card>
             )}
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: { md: 1 } }}>
             {/* ステータス更新 */}
             <Paper sx={{ p: 3, mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
@@ -338,8 +337,8 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                 </Typography>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

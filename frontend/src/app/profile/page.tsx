@@ -87,7 +87,7 @@ export default function ProfilePage() {
             <ListItem>
               <ListItemText
                 primary="Firebase UID"
-                secondary={user.firebase_uid}
+                secondary={user.firebaseUid}
                 primaryTypographyProps={{ fontWeight: 600 }}
               />
             </ListItem>
@@ -101,14 +101,6 @@ export default function ProfilePage() {
                     {user.email}
                   </Box>
                 }
-                primaryTypographyProps={{ fontWeight: 600 }}
-              />
-            </ListItem>
-
-            <ListItem>
-              <ListItemText
-                primary="登録日"
-                secondary={new Date(user.created_at).toLocaleDateString('ja-JP')}
                 primaryTypographyProps={{ fontWeight: 600 }}
               />
             </ListItem>
