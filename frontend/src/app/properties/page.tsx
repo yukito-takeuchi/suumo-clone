@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import {
   Container,
   Box,
@@ -19,7 +19,7 @@ import { searchProperties } from '@/lib/api';
 import { Property, PropertySearchParams } from '@/types';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-export default function PropertiesPage() {
+function PropertiesContent() {
   const searchParams = useSearchParams();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,5 +171,17 @@ export default function PropertiesPage() {
         )}
       </Container>
     </Box>
+  );
+}
+
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    }>
+      <PropertiesContent />
+    </Suspense>
   );
 }
