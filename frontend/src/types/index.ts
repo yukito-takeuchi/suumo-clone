@@ -162,6 +162,7 @@ export interface Inquiry {
   prefecture_name?: string;
   company_name?: string;
   company_phone?: string;
+  property?: Property;
 }
 
 export interface CreateInquiryParams {

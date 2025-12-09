@@ -233,14 +233,30 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                       対象物件
                     </Typography>
                   </Box>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                    <Chip
+                      label={`賃貸${inquiry.property.building_type?.name || ''}`}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                    <Chip
+                      label={inquiry.property.floor_plan_type?.name || ''}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Box>
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     {inquiry.property.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                     {inquiry.property.prefecture?.name} {inquiry.property.address}
                   </Typography>
-                  <Typography variant="body1" color="primary" sx={{ fontWeight: 600, mb: 2 }}>
-                    賃料: {inquiry.property.rent.toLocaleString()}円
+                  <Typography variant="body1" color="primary" sx={{ fontWeight: 600, mb: 1 }}>
+                    賃料: {inquiry.property.rent.toLocaleString()}円 / 管理費: {inquiry.property.management_fee?.toLocaleString() || 0}円
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    専有面積: {inquiry.property.area}㎡ / 築{inquiry.property.building_age}年
                   </Typography>
                   <Button
                     variant="outlined"
