@@ -5,7 +5,6 @@ import {
   Container,
   Box,
   Typography,
-  Grid,
   Paper,
   Chip,
   Divider,
@@ -112,9 +111,9 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
           <Typography color="text.primary">{property.title}</Typography>
         </Breadcrumbs>
 
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
           {/* 左カラム: 画像 */}
-          <Grid item xs={12} md={8}>
+          <Box sx={{ flex: { md: 2 } }}>
             <Paper sx={{ p: 0, overflow: 'hidden' }}>
               {/* メイン画像 */}
               <Box
@@ -275,10 +274,10 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                 </>
               )}
             </Paper>
-          </Grid>
+          </Box>
 
           {/* 右カラム: 物件情報サマリー・問い合わせボタン */}
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: { md: 1 } }}>
             <Paper sx={{ p: 3, position: 'sticky', top: 80 }}>
               <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
                 {property.title}
@@ -328,8 +327,8 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   : 'ログインが必要です'}
               </Typography>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

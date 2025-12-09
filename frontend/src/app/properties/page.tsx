@@ -56,7 +56,7 @@ export default function PropertiesPage() {
         if (featureIds) params.feature_ids = featureIds.split(',').map(Number);
 
         const walkingMinutes = searchParams.get('walking_minutes');
-        if (walkingMinutes) params.walking_minutes = Number(walkingMinutes);
+        if (walkingMinutes) params.walking_minutes_max = Number(walkingMinutes);
 
         const areaMin = searchParams.get('area_min');
         if (areaMin) params.area_min = Number(areaMin);
@@ -65,7 +65,7 @@ export default function PropertiesPage() {
         if (areaMax) params.area_max = Number(areaMax);
 
         const buildingAge = searchParams.get('building_age');
-        if (buildingAge) params.building_age = Number(buildingAge);
+        if (buildingAge) params.building_age_max = Number(buildingAge);
 
         const keyword = searchParams.get('keyword');
         if (keyword) params.keyword = keyword;
