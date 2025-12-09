@@ -14,7 +14,7 @@
     "seed:properties-full": "ts-node src/scripts/seed-properties-full.ts",
     "seed:inquiries": "ts-node src/scripts/seed-inquiries.ts",
     "reset:properties": "ts-node src/scripts/reset-properties.ts",
-    "reset:seed": "npm run reset:properties && npm run seed:properties-full"
+    "reset:seed": "npm run reset:properties && npm run seed:properties-full && npm run seed:inquiries"
   },
   "keywords": [],
   "author": "",

@@ -17,11 +17,7 @@ async function resetProperties() {
 
     await client.query('BEGIN');
 
-    // 1. 問い合わせデータを削除
-    const inquiriesResult = await client.query('DELETE FROM inquiries RETURNING id');
-    console.log(`✅ 問い合わせデータを削除しました: ${inquiriesResult.rowCount}件`);
-
-    // 2. 物件関連データを削除（外部キー制約の順序に注意）
+    // 1. 物件関連データを削除（外部キー制約の順序に注意）
     const propertyFeaturesResult = await client.query('DELETE FROM property_property_features RETURNING property_id');
     console.log(`✅ 物件こだわり条件を削除しました: ${propertyFeaturesResult.rowCount}件`);
 
@@ -65,8 +61,7 @@ async function resetProperties() {
     console.log(`   - 画像: ${propertyImagesResult.rowCount}件`);
     console.log(`   - 駅情報: ${propertyStationsResult.rowCount}件`);
     console.log(`   - こだわり条件: ${propertyFeaturesResult.rowCount}件`);
-    console.log(`   - 問い合わせ: ${inquiriesResult.rowCount}件`);
-    console.log('\n💡 マスターデータとユーザーデータは保持されています。');
+    console.log('\n💡 マスターデータ、ユーザーデータ、問い合わせデータは保持されています。');
 
   } catch (error) {
     await client.query('ROLLBACK');
