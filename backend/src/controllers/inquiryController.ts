@@ -385,50 +385,9 @@ export const inquiryController = {
         });
       }
 
-      const inquiryData = result.rows[0];
-
-      // 物件情報を構造化
-      const inquiry = {
-        id: inquiryData.id,
-        property_id: inquiryData.property_id,
-        individual_user_id: inquiryData.individual_user_id,
-        corporate_user_id: inquiryData.corporate_user_id,
-        contact_name: inquiryData.contact_name,
-        contact_email: inquiryData.contact_email,
-        contact_phone: inquiryData.contact_phone,
-        message: inquiryData.message,
-        status: inquiryData.status,
-        created_at: inquiryData.created_at,
-        updated_at: inquiryData.updated_at,
-        property: {
-          id: inquiryData.property_id,
-          title: inquiryData.property_title,
-          address: inquiryData.property_address,
-          rent: inquiryData.property_rent,
-          management_fee: inquiryData.property_management_fee,
-          floor_number: inquiryData.floor_number,
-          building_age: inquiryData.building_age,
-          area: inquiryData.area,
-          deposit: inquiryData.deposit,
-          key_money: inquiryData.key_money,
-          prefecture: {
-            id: inquiryData.prefecture_id,
-            name: inquiryData.prefecture_name,
-          },
-          building_type: {
-            id: inquiryData.building_type_id,
-            name: inquiryData.building_type_name,
-          },
-          floor_plan_type: {
-            id: inquiryData.floor_plan_type_id,
-            name: inquiryData.floor_plan_type_name,
-          },
-        },
-      };
-
       res.json({
         success: true,
-        data: inquiry,
+        data: result.rows[0],
       });
     } catch (error) {
       console.error('Get corporate inquiry error:', error);

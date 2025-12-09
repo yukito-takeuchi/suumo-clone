@@ -57,8 +57,6 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
     setLoading(true);
     try {
       const data = await getCorporateInquiryById(Number(params.id));
-      console.log('Inquiry data:', data);
-      console.log('Property data:', data.property);
       setInquiry(data);
       setSelectedStatus(data.status as 'unread' | 'read' | 'responded');
     } catch (error) {
@@ -226,7 +224,7 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
             </Paper>
 
             {/* 対象物件 */}
-            {inquiry.property && (
+            {inquiry.property_title && (
               <Card sx={{ mb: 3 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -237,33 +235,33 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                     <Chip
-                      label={`賃貸${inquiry.property.building_type?.name || ''}`}
+                      label={`賃貸${inquiry.building_type_name || ''}`}
                       size="small"
                       color="primary"
                       variant="outlined"
                     />
                     <Chip
-                      label={inquiry.property.floor_plan_type?.name || ''}
+                      label={inquiry.floor_plan_type_name || ''}
                       size="small"
                       variant="outlined"
                     />
                   </Box>
                   <Typography variant="h6" sx={{ mb: 1 }}>
-                    {inquiry.property.title}
+                    {inquiry.property_title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {inquiry.property.prefecture?.name} {inquiry.property.address}
+                    {inquiry.prefecture_name} {inquiry.property_address}
                   </Typography>
                   <Typography variant="body1" color="primary" sx={{ fontWeight: 600, mb: 1 }}>
-                    賃料: {inquiry.property.rent.toLocaleString()}円 / 管理費: {inquiry.property.management_fee?.toLocaleString() || 0}円
+                    賃料: {inquiry.property_rent?.toLocaleString()}円 / 管理費: {inquiry.property_management_fee?.toLocaleString() || 0}円
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    専有面積: {inquiry.property.area}㎡ / 築{inquiry.property.building_age}年
+                    専有面積: {inquiry.area}㎡ / 築{inquiry.building_age}年
                   </Typography>
                   <Button
                     variant="outlined"
                     size="small"
-                    onClick={() => router.push(`/properties/${inquiry.property?.id}`)}
+                    onClick={() => router.push(`/properties/${inquiry.property_id}`)}
                   >
                     物件詳細を見る
                   </Button>

@@ -159,7 +159,15 @@ export interface Inquiry {
   property_title?: string;
   property_address?: string;
   property_rent?: number;
+  property_management_fee?: number;
   prefecture_name?: string;
+  building_type_name?: string;
+  floor_plan_type_name?: string;
+  area?: number;
+  building_age?: number;
+  floor_number?: number;
+  deposit?: number;
+  key_money?: number;
   company_name?: string;
   company_phone?: string;
   property?: Property;
