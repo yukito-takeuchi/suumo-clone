@@ -17,10 +17,10 @@ import {
   Alert,
   Breadcrumbs,
   Link as MuiLink,
-  Grid,
   Card,
   CardContent,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
