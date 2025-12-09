@@ -57,6 +57,8 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
     setLoading(true);
     try {
       const data = await getCorporateInquiryById(Number(params.id));
+      console.log('Inquiry data:', data);
+      console.log('Property data:', data.property);
       setInquiry(data);
       setSelectedStatus(data.status as 'unread' | 'read' | 'responded');
     } catch (error) {
