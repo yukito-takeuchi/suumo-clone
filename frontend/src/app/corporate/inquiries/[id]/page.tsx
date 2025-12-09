@@ -194,10 +194,6 @@ export default function CorporateInquiryDetailPage({ params }: { params: { id: s
                   label={getStatusLabel(inquiry.status)}
                   color={getStatusColor(inquiry.status)}
                 />
-                <Chip
-                  label={getInquiryTypeLabel(inquiry.inquiry_type)}
-                  variant="outlined"
-                />
               </Box>
 
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
