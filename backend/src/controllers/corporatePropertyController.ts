@@ -109,7 +109,7 @@ export const corporatePropertyController = {
       if (images && images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           // Save base64 image to file and get URL
-          const imageUrl = saveBase64Image(images[i]);
+          const imageUrl = await saveBase64Image(images[i]);
           await client.query(
             `INSERT INTO property_images (property_id, image_url, display_order)
              VALUES ($1, $2, $3)`,
@@ -428,9 +428,9 @@ export const corporatePropertyController = {
         const imagesToDelete = existingImages.rows.filter((row: any) => !newImageUrls.has(row.image_url));
 
         // Delete removed image files
-        imagesToDelete.forEach((row: any) => {
-          deleteImage(row.image_url);
-        });
+        await Promise.all(
+          imagesToDelete.map((row: any) => deleteImage(row.image_url))
+        );
 
         // Delete existing image records
         await client.query('DELETE FROM property_images WHERE property_id = $1', [id]);
@@ -439,7 +439,7 @@ export const corporatePropertyController = {
         if (images.length > 0) {
           for (let i = 0; i < images.length; i++) {
             // Save base64 image to file and get URL (or return existing URL as-is)
-            const imageUrl = saveBase64Image(images[i]);
+            const imageUrl = await saveBase64Image(images[i]);
             await client.query(
               `INSERT INTO property_images (property_id, image_url, display_order)
                VALUES ($1, $2, $3)`,
