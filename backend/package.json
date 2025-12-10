@@ -7,8 +7,8 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "db:migrate": "node-pg-migrate up -m migrations",
-    "db:migrate:down": "node-pg-migrate down -m migrations",
+    "db:migrate": "node-pg-migrate up -m migrations --database-url-var DATABASE_URL",
+    "db:migrate:down": "node-pg-migrate down -m migrations --database-url-var DATABASE_URL",
     "db:seed": "ts-node src/scripts/seed.ts",
     "seed:additional-users": "ts-node src/scripts/seed-additional-users.ts",
     "seed:properties-full": "ts-node src/scripts/seed-properties-full.ts",
@@ -31,6 +31,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-google-storage": "^1.3.0",
+    "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.3"
   },
   "devDependencies": {
@@ -40,7 +41,6 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.0",
     "@types/pg": "^8.10.9",
-    "node-pg-migrate": "^6.2.2",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
