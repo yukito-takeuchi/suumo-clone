@@ -33,21 +33,19 @@ const propertyData = [
   { title: 'サンシャイン西荻窪', address: '杉並区西荻北3-2-1', rent: 67000, floor_plan: '1K', building_type: 'アパート', area: 20.0, building_age: 12, floor_number: 2, stations: [12], features: [6, 7] },
 ];
 
-async function seedPropertiesFull() {
-  try {
-    console.log('🌱 Seeding 30 properties...');
+export async function seedPropertiesFull() {
+  console.log('🌱 Seeding 30 properties...');
 
-    // 企業ユーザーIDを取得
-    const corporateUserResult = await query(
-      `SELECT id FROM users WHERE email = 'iyggf66974@yahoo.ne.jp' AND role = 'corporate'`
-    );
+  // 企業ユーザーIDを取得
+  const corporateUserResult = await query(
+    `SELECT id FROM users WHERE email = 'iyggf66974@yahoo.ne.jp' AND role = 'corporate'`
+  );
 
-    if (corporateUserResult.rows.length === 0) {
-      console.error('❌ Corporate user not found');
-      process.exit(1);
-    }
+  if (corporateUserResult.rows.length === 0) {
+    throw new Error('Corporate user not found');
+  }
 
-    const corporateUserId = corporateUserResult.rows[0].id;
+  const corporateUserId = corporateUserResult.rows[0].id;
 
     // 間取り・建物種類のマッピング
     const floorPlanMap: any = {};
@@ -125,11 +123,12 @@ async function seedPropertiesFull() {
     }
 
     console.log('✅ Properties seeding completed!');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error seeding properties:', error);
-    process.exit(1);
-  }
 }
 
-seedPropertiesFull();
+// 直接実行された場合のみ実行
+if (require.main === module) {
+  seedPropertiesFull().catch((error) => {
+    console.error('❌ Error seeding properties:', error);
+    process.exit(1);
+  });
+}
