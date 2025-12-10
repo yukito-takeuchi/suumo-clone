@@ -2,16 +2,8 @@
 const { exec } = require('child_process');
 
 // Heroku PostgreSQL requires SSL with rejectUnauthorized: false
-// Append SSL parameters to DATABASE_URL if not already present
-let databaseUrl = process.env.DATABASE_URL;
-
-if (databaseUrl && !databaseUrl.includes('sslmode=')) {
-  const separator = databaseUrl.includes('?') ? '&' : '?';
-  databaseUrl = `${databaseUrl}${separator}sslmode=require`;
-}
-
-// Set the modified DATABASE_URL
-process.env.DATABASE_URL = databaseUrl;
+// Set NODE_TLS_REJECT_UNAUTHORIZED to allow self-signed certificates
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // Run node-pg-migrate
 const command = 'node-pg-migrate up -m migrations --database-url-var DATABASE_URL --no-check-order';
