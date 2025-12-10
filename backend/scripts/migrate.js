@@ -2,21 +2,11 @@
 const { exec } = require('child_process');
 
 // Heroku PostgreSQL requires SSL connection
-// Add SSL parameters directly to DATABASE_URL
-let databaseUrl = process.env.DATABASE_URL;
+// PGSSLMODE=no-verify: Force SSL but skip certificate verification (Heroku requirement)
+process.env.PGSSLMODE = 'no-verify';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-if (databaseUrl) {
-  // Add SSL parameters to the connection string
-  // sslmode=require: SSL required but skip certificate verification (for Heroku)
-  const separator = databaseUrl.includes('?') ? '&' : '?';
-  databaseUrl = `${databaseUrl}${separator}sslmode=require`;
-
-  console.log('🔧 Modified DATABASE_URL with SSL parameters');
-  process.env.DATABASE_URL = databaseUrl;
-}
-
-// Also set PGSSLMODE as fallback
-process.env.PGSSLMODE = 'require';
+console.log('🔧 SSL settings configured for Heroku PostgreSQL');
 
 // Run node-pg-migrate
 const command = 'node-pg-migrate up -m migrations --database-url-var DATABASE_URL --no-check-order';

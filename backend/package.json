@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "db:migrate": "node scripts/migrate.js",
     "db:migrate:down": "node-pg-migrate down -m migrations --database-url-var DATABASE_URL --ssl",
-    "db:seed": "ts-node src/scripts/seed.ts",
+    "db:seed": "node dist/scripts/seed.js",
     "seed:additional-users": "ts-node src/scripts/seed-additional-users.ts",
     "seed:properties-full": "ts-node src/scripts/seed-properties-full.ts",
     "seed:inquiries": "ts-node src/scripts/seed-inquiries.ts",
