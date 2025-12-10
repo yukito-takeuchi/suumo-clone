@@ -5,12 +5,20 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install all dependencies (including devDependencies for building)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-EXPOSE 5000
+# Build TypeScript
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+# Remove devDependencies
+RUN npm prune --production
+
+# Expose port (Heroku uses $PORT)
+EXPOSE $PORT
+
+# Start production server
+CMD ["node", "dist/index.js"]
