@@ -1,10 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { seedUsers } from './seed-users';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { seedPropertiesFull } from './seed-properties-full';
 
 dotenv.config();
 
@@ -159,9 +156,18 @@ async function seed() {
     await seedUsers();
   } catch (error) {
     console.error('❌ User seeding failed:', error);
+    throw error;
   }
 
   await pool.end();
+
+  // 物件データ投入（ユーザーデータ投入後に実行）
+  try {
+    await seedPropertiesFull();
+  } catch (error) {
+    console.error('❌ Property seeding failed:', error);
+  }
+
   console.log('✅ All seeding completed successfully!');
 }
 

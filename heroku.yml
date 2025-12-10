@@ -1,10 +1,10 @@
 build:
   docker:
     web: Dockerfile
-# Temporarily disabled to deploy new code with SSL fixes
-# release:
-#   image: web
-#   command:
-#     - npm run db:migrate
+release:
+  image: web
+  command:
+    - npm run db:migrate
+    - npm run db:seed
 run:
   web: npm start
