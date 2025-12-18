@@ -23,48 +23,48 @@ const additionalUsers = [
   },
 ];
 
-async function seedAdditionalUsers() {
-  try {
-    console.log('🌱 Seeding additional users...');
+export async function seedAdditionalUsers() {
+  console.log('🌱 Seeding additional users...');
 
-    for (const userData of additionalUsers) {
-      // ユーザー作成
-      const userResult = await query(
-        `INSERT INTO users (firebase_uid, email, role)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (firebase_uid) DO NOTHING
-         RETURNING id`,
-        [userData.firebaseUid, userData.email, userData.role]
+  for (const userData of additionalUsers) {
+    // ユーザー作成
+    const userResult = await query(
+      `INSERT INTO users (firebase_uid, email, role)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (firebase_uid) DO NOTHING
+       RETURNING id`,
+      [userData.firebaseUid, userData.email, userData.role]
+    );
+
+    if (userResult.rows.length > 0) {
+      const userId = userResult.rows[0].id;
+
+      // 個人プロフィール作成
+      await query(
+        `INSERT INTO individual_profiles (user_id, first_name, last_name, phone)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (user_id) DO NOTHING`,
+        [
+          userId,
+          userData.profile.first_name,
+          userData.profile.last_name,
+          userData.profile.phone,
+        ]
       );
 
-      if (userResult.rows.length > 0) {
-        const userId = userResult.rows[0].id;
-
-        // 個人プロフィール作成
-        await query(
-          `INSERT INTO individual_profiles (user_id, first_name, last_name, phone)
-           VALUES ($1, $2, $3, $4)
-           ON CONFLICT (user_id) DO NOTHING`,
-          [
-            userId,
-            userData.profile.first_name,
-            userData.profile.last_name,
-            userData.profile.phone,
-          ]
-        );
-
-        console.log(`✅ Created user: ${userData.email}`);
-      } else {
-        console.log(`⏭️  User already exists: ${userData.email}`);
-      }
+      console.log(`✅ Created user: ${userData.email}`);
+    } else {
+      console.log(`⏭️  User already exists: ${userData.email}`);
     }
-
-    console.log('✅ Additional users seeding completed!');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error seeding additional users:', error);
-    process.exit(1);
   }
+
+  console.log('✅ Additional users seeding completed!');
 }
 
-seedAdditionalUsers();
+// 直接実行された場合のみ実行
+if (require.main === module) {
+  seedAdditionalUsers().catch((error) => {
+    console.error('❌ Error seeding additional users:', error);
+    process.exit(1);
+  });
+}
