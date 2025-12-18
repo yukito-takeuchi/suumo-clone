@@ -1,7 +1,9 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { seedUsers } from './seed-users';
+import { seedAdditionalUsers } from './seed-additional-users';
 import { seedPropertiesFull } from './seed-properties-full';
+import { seedInquiries } from './seed-inquiries';
 
 dotenv.config();
 
@@ -159,6 +161,14 @@ async function seed() {
     throw error;
   }
 
+  // 追加ユーザーデータ投入
+  try {
+    await seedAdditionalUsers();
+  } catch (error) {
+    console.error('❌ Additional user seeding failed:', error);
+    throw error;
+  }
+
   await pool.end();
 
   // 物件データ投入（ユーザーデータ投入後に実行）
@@ -166,6 +176,14 @@ async function seed() {
     await seedPropertiesFull();
   } catch (error) {
     console.error('❌ Property seeding failed:', error);
+    throw error;
+  }
+
+  // 問い合わせデータ投入（物件とユーザーが必要）
+  try {
+    await seedInquiries();
+  } catch (error) {
+    console.error('❌ Inquiry seeding failed:', error);
   }
 
   console.log('✅ All seeding completed successfully!');
